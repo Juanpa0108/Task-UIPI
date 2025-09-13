@@ -1,0 +1,83 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f9fafc;
+  margin: 0;
+  padding: 0;
+}
+
+.help-section {
+  max-width: 700px;
+  margin: 50px auto;
+  padding: 25px;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+.help-section h2 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 10px;
+  color: #4a4a9e;
+}
+
+.help-intro {
+  text-align: center;
+  font-size: 1rem;
+  margin-bottom: 20px;
+  color: #555;
+}
+
+.faq-item {
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 10px;
+}
+
+.faq-question {
+  width: 100%;
+  background: #f1f3ff;
+  border: none;
+  outline: none;
+  text-align: left;
+  font-size: 1.1rem;
+  padding: 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.faq-question:hover {
+  background: #e2e6ff;
+}
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.3s ease;
+  padding: 0 15px;
+  color: #444;
+}
+
+.faq-answer.open {
+  padding: 15px;
+  max-height: 200px;
+}
+.help-actions {
+  text-align: center;
+  margin-top: 25px;
+}
+
+#btnVolver {
+  background: #4a4a9e;
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+#btnVolver:hover {
+  background: #2c2c54;
+}

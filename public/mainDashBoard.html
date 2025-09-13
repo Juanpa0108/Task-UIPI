@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TaskFlow - Tablero Principal</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../src/autentication/dashboard.css">
+</head>
+<body>
+  <!-- HEADER -->
+  <header class="app-header">
+    <div class="header-left">
+      <i class="fas fa-bars menu-toggle"></i>
+      <img src="./assets/logo.jpg" alt="TaskFlow Logo" class="logo">
+    </div>
+        <!-- dashboard.html -->
+  
+      <!-- Aquí mostraremos el mensaje -->
+      <h1>Bienvenido a TaskFlow</h1>
+    
+    <div class="header-right">
+      
+      <div class="user-menu">
+        <span id="welcomeText" class="welcome-text"></span> <!-- aquí va el saludo -->
+        <i class="fas fa-user user-icon"></i>
+        <div class="user-dropdown">
+          <a href="./index.html"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MENU DESPLEGABLE -->
+  <aside id="sideMenu" class="side-menu">
+    <ul>
+      <li class="active"><a href="/mainDashBoard.html"><i class="fas fa-tasks"></i> Gestor de tareas</a></li>
+      <li><a href="/help.html"><i class="fas fa-question-circle"></i> Ayuda</a></li>
+    </ul>
+  </aside>
+
+    <!-- Main content -->
+    <main class="board-container">
+
+      <!-- Banner de bienvenida -->
+      <div id="welcomeBanner" class="welcome-banner" style="display: none;">
+        <div>
+          <i class="fas fa-check-circle"></i>
+          <span id="welcomeMessage"></span>
+        </div>
+        <button class="btn-close-banner" onclick="closeWelcomeBanner()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <!-- Active tasks section -->
+      <section class="tasks-section">
+        <div class="content-header">
+          <button id="createTaskBtn" class="btn-create">
+            <i class="fas fa-plus"></i> Crear
+          </button>
+        </div>
+        <div id="task-groups" class="task-groups">
+          <!-- Tasks will be added dynamically -->
+        </div>
+      </section>
+
+    <!-- Tareas completadas -->
+    <section class="completed-section">
+      <h2 class="section-title">
+        <i class="fas fa-check-circle"></i> Tareas Completadas
+      </h2>
+      <div id="completed-tasks" class="task-items"></div>
+    </section>
+  </main>
+
+  <!-- MODAL (Crear/Editar tarea) -->
+  <div id="taskModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="fas fa-clipboard-list"></i> Gestión de Tareas</h2>
+        <button class="close-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="taskForms">
+          <div class="task-form" data-form-id="0">
+            <h3>Tarea 1</h3>
+            <div class="form-group">
+              <label for="taskTitle_0"><i class="fas fa-heading"></i> Título</label>
+              <input type="text" id="taskTitle_0" placeholder="Ingrese el título" required>
+            </div>
+            <div class="form-group">
+              <label for="taskDescription_0"><i class="fas fa-align-left"></i> Descripción</label>
+              <textarea id="taskDescription_0" placeholder="Ingrese la descripción"></textarea>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="taskPriority_0"><i class="fas fa-flag"></i> Prioridad</label>
+                <select id="taskPriority_0">
+                  <option value="low">Baja</option>
+                  <option value="medium">Media</option>
+                  <option value="high">Alta</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="taskStatus_0"><i class="fas fa-hourglass-half"></i> Estado</label>
+                <select id="taskStatus_0">
+                  <option value="todo">Por hacer</option>
+                  <option value="inProgress">En proceso</option>
+                  <option value="done">Terminada</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="taskStart_0"><i class="fas fa-calendar-alt"></i> Fecha inicio</label>
+                <input type="datetime-local" id="taskStart_0">
+              </div>
+              <div class="form-group">
+                <label for="taskEnd_0"><i class="fas fa-calendar-check"></i> Fecha cierre</label>
+                <input type="datetime-local" id="taskEnd_0">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancelModalBtn">Cancelar</button>
+        <button class="btn btn-primary" id="saveTaskBtn">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-links">
+      <a href="#">Políticas de privacidad</a>
+      <a href="#">Términos y condiciones</a>
+    </div>
+  </footer>
+
+  <script src="../src/autentication/dashBoard.js"></script>
+</body>
+</html>

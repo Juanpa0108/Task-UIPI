@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sección de Ayuda</title>
+  <link rel="stylesheet" href="help.css">
+</head>
+<body>
+  <section class="help-section">
+    <h2>Centro de Ayuda</h2>
+    <p class="help-intro">Aquí encontrarás respuestas a las preguntas más frecuentes. Haz clic en una pregunta para ver la respuesta.</p>
+    
+    <div class="faq">
+      <div class="faq-item">
+        <button class="faq-question">¿Cómo puedo crear una cuenta?</button>
+        <div class="faq-answer">
+          <p>Para crear una cuenta, haz clic en el botón <b>Registrarse</b> en la parte superior y completa el formulario con tus datos. 
+           <a href="/register.html" target="_blank">Registro aquí</a></p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">¿Olvidé mi contraseña, qué hago?</button>
+        <div class="faq-answer">
+          <p>Haz clic en <b>¿Olvidaste tu contraseña?</b> en la página de inicio de sesión y sigue los pasos para restablecerla. 
+          <a href="/resetPassword.html" target="_blank">Restablecer contraseña</a></p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">¿Cómo creo mi tarea?</button>
+        <div class="faq-answer">
+          <p>Para crear una tarea, dirígete al tablero principal y haz clic en el botón <b>“+ Nueva Tarea”</b>. 
+           <a href="/mainDashBoard.html" target="_blank">Crear Tarea</a></p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">¿Cómo borro mi tarea?</button>
+        <div class="faq-answer">
+          <p>Selecciona la tarea que deseas eliminar y haz clic en el icono de <b>ELIMINAR</b>. Confirma la acción y tu tarea será eliminada.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTÓN VOLVER -->
+    <div class="help-actions">
+      <button id="btnVolver">⬅ Volver</button>
+    </div>
+  </section>
+
+  <script type="module" src="/src/info/help.js"></script>
+</body>
+</html>
