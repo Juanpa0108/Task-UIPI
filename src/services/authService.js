@@ -1,10 +1,11 @@
 // services/authService.js
-
-// URL base de tu backend
-const API_URL = "http://localhost:4000"; 
+// URL base de tu backend - usando variables de entorno de Vite
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 // ----------------- REGISTRO -----------------
 export async function registerUser(userData) {
+  console.log(API_URL); 
+  debugger;
   try {
     const response = await fetch(`${API_URL}/auth/register`, {
       method: "POST",
