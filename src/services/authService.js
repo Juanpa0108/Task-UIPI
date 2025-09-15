@@ -1,7 +1,7 @@
 // services/authService.js
 
 // URL base de tu backend
-const API_URL = "http://localhost:4000"; 
+const API_URL = "https://taskbackpi.onrender.com"; 
 
 // ----------------- REGISTRO -----------------
 export async function registerUser(userData) {
