@@ -542,4 +542,27 @@ main.board-container {
     transform: translateY(0);
   }
 }
+.about-link {
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+  background: #3b82f6;       /* Azul */
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+/* Hover */
+.about-link:hover {
+  background: #25b3eb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+/* Activo */
+.about-link:active {
+  transform: scale(0.97);
+}
 
