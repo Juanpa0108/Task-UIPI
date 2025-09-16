@@ -1,7 +1,7 @@
 // services/authService.js
 
 // URL base de tu backend - usando variable de entorno
-const API_URL = import.meta.env.VITE_API_URL || "https://taskbackpi.onrender.com"; 
+const API_URL = import.meta.env.VITE_API_URL; 
 
 // ----------------- REGISTRO -----------------
 export async function registerUser(userData) {
