@@ -1,7 +1,9 @@
 // services/authService.js
 
-// URL base de tu backend
-const API_URL = "http://localhost:4000"; 
+
+// URL base de tu backend - usando variable de entorno
+const API_URL = import.meta.env.VITE_API_URL; 
+
 
 // ----------------- REGISTRO -----------------
 export async function registerUser(userData) {
