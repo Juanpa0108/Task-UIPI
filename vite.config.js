@@ -11,3 +11,4 @@ export default defineConfig({
     open: true  // Abre automáticamente el navegador
   }
 })
+
