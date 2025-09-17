@@ -48,20 +48,29 @@
         </div> <!-- end left-panel -->
 
         <div class="panel right-panel">
-          <h3>Cree una Contraseña</h3>
+        <h3>Cree una Contraseña</h3>
 
-          <div class="field">
-            <label for="password">Crea una contraseña</label>
-            <input id="password" name="password" type="password" class="input-pill" placeholder="Contraseña" />
-            <div class="error" data-for="password"></div>
-          </div>
+        <div class="field">
+              <label for="password">Crea una contraseña</label>
+              <input id="password" name="password" type="password" class="input-pill" placeholder="Contraseña" />
+              <div class="error" data-for="password"></div>
 
-          <div class="field">
-            <label for="confirmPassword">Confirmar contraseña</label>
-            <input id="confirmPassword" name="confirmPassword" type="password" class="input-pill" placeholder="Repite la contraseña" />
-            <div class="error" data-for="confirmPassword"></div>
-          </div>
+              <div class="show-password">
+                <input type="checkbox" id="showPassword1" />
+                <label for="showPassword1">Mostrar contraseña</label>
+              </div>
+            </div>
 
+            <div class="field">
+              <label for="confirmPassword">Confirmar contraseña</label>
+              <input id="confirmPassword" name="confirmPassword" type="password" class="input-pill" placeholder="Repite la contraseña" />
+              <div class="error" data-for="confirmPassword"></div>
+
+              <div class="show-password">
+                <input type="checkbox" id="showPassword2" />
+                <label for="showPassword2">Mostrar contraseña</label>
+              </div>
+            </div>
           <div class="requirements">
             <p>Tu contraseña debe tener:</p>
             <ul id="reqList">

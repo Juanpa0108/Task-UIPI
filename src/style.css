@@ -123,3 +123,72 @@ body {
 .footer a:hover {
   color: #fff;
 }
+
+/* responsive Móviles */
+@media (max-width: 768px) {
+  .header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* separa extremos */
+  padding: 1rem 1rem;
+}
+
+  .nav {
+  flex: 1; /* ocupa espacio intermedio */
+  display: flex;
+  justify-content: center;
+  gap: 1.0rem;
+}
+
+  .nav a {
+    margin: 0.4rem 0.8rem 0.4rem 0;
+  }
+
+  .hero {
+    flex-direction: column; /* Texto arriba, imagen abajo */
+    text-align: center;
+    padding: 2rem 1rem;
+  }
+
+  .hero-text h1 {
+    font-size: 1.5rem;
+  }
+
+  .hero-text p {
+    font-size: 1rem;
+  }
+
+  .hero-image img {
+    max-width: 90%;
+    height: auto;
+    margin-top: 1rem;
+  }
+
+  .footer {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .footer a {
+    margin: 0.5rem;
+  }
+}
+
+/* 📱 Extra pequeño (ej. <480px) */
+@media (max-width: 480px) {
+  .btn-login,
+  .btn-primary {
+    width: 100%;
+    text-align: center;
+    padding: 0.8rem;
+  }
+
+  .hero-text h1 {
+    font-size: 1.3rem;
+  }
+
+  .hero-text p {
+    font-size: 0.9rem;
+  }
+}
