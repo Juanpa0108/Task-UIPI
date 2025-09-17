@@ -10,13 +10,13 @@ export default defineConfig(({ command, mode }) => {
     
     // Configuración del servidor de desarrollo
     server: {
-      port: 3000,
+      port: 5173,
       open: true
     },
     
     // Definir variables de entorno para el cliente
     define: {
-      __API_URL__: JSON.stringify(env.VITE_API_URL || 'https://taskbackpi.onrender.com'),
+      __API_URL__: JSON.stringify(env.VITE_API_URL || 'http://localhost:4000'),
       __APP_NAME__: JSON.stringify(env.VITE_APP_NAME || 'TaskFlow'),
       __APP_VERSION__: JSON.stringify(env.VITE_APP_VERSION || '1.0.0')
     },

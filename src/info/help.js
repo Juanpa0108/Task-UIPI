@@ -24,8 +24,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnVolver = document.getElementById("btnVolver");
   if (btnVolver) {
     btnVolver.addEventListener("click", () => {
-      // Redirige al tablero principal
-      window.location.href = "/mainDashBoard.html";
+      // Volver a la página anterior
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        // Si no hay historial, ir a la página principal
+        window.location.href = "/";
+      }
     });
   }
 });
