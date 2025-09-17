@@ -1,4 +1,4 @@
-
+// dashBoard.js (reemplaza tu archivo existente con este)
 // --------- CONFIG ----------
 const taskStates = {
   todo: { name: 'Por hacer', class: 'status-todo' },
@@ -53,12 +53,6 @@ window.closeWelcomeBanner = function() {
 // --------- INIT ----------
 document.addEventListener('DOMContentLoaded', () => {
   console.log('DOM cargado, iniciando dashboard...');
-
-  // Verificar que estamos en la página correcta
-  if (!window.location.pathname.includes('mainDashBoard.html')) {
-    console.log('No es la página del dashboard, saliendo...');
-    return;
-  }
 
   if (!checkAuthentication()) return;
 
