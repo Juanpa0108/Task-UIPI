@@ -59,62 +59,78 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Manejo del formulario de login
-form.addEventListener('submit', async function(e) {
-  e.preventDefault();
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
 
-  if (!validateForm()) return;
+    if (!validateForm()) return;
 
-  // Mostrar spinner y deshabilitar botón
-  loadingSpinner.style.display = 'inline-block';
-  submitButton.disabled = true;
+    // Mostrar spinner y deshabilitar botón
+    loadingSpinner.style.display = 'inline-block';
+    submitButton.disabled = true;
 
-  try {
-    const credentials = {
-      email: emailInput.value.trim(),
-      password: passwordInput.value
-    };
+    try {
+      const credentials = {
+        email: emailInput.value.trim(),
+        password: passwordInput.value
+      };
 
-    const data = await loginUser(credentials);
-    
-    console.log('=== RESPUESTA COMPLETA DEL LOGIN ===');
-    console.log('data completa:', data);
-    console.log('data.token:', data.token);
-    console.log('data.user:', data.user);
-    console.log('data.user.firstName:', data.user?.firstName);
-
-    if (data.token) {
-      // Guardar token/usuario en localStorage
-      localStorage.setItem('authToken', data.token);
-      localStorage.setItem('userData', JSON.stringify(data.user));
+      const data = await loginUser(credentials);
       
-      // Guardar el nombre del usuario para el mensaje de bienvenida
-      const userName = data.user?.firstName || data.user?.name || 'Usuario';
-      localStorage.setItem('userName', userName);
-      
-      console.log('=== DATOS GUARDADOS EN LOCALSTORAGE ===');
-      console.log('authToken guardado:', localStorage.getItem('authToken'));
-      console.log('userData guardado:', localStorage.getItem('userData'));
-      console.log('userName guardado:', localStorage.getItem('userName'));
-      
-      // Verificar que se guardó correctamente
-      const savedUserData = JSON.parse(localStorage.getItem('userData'));
-      console.log('userData parseado:', savedUserData);
-      console.log('firstName del userData guardado:', savedUserData?.firstName);
+      console.log('=== RESPUESTA COMPLETA DEL LOGIN ===');
+      console.log('data completa:', data);
+      console.log('data.token:', data.token);
+      console.log('data.user:', data.user);
+      console.log('data.user.firstName:', data.user?.firstName);
 
-      // ✅ Redirigir pasando token en parámetro
-      window.location.href = "/mainDashBoard.html?token=" + encodeURIComponent(data.token);
-    } else {
-      throw new Error("No se recibió token en la respuesta");
+      if (data.token) {
+        // Guardar token y datos del usuario
+        localStorage.setItem('authToken', data.token);
+        localStorage.setItem('userData', JSON.stringify(data.user));
+        
+        // ⭐ ESTO ES LO IMPORTANTE: Guardar el userId
+        const userId = data.user?._id || data.user?.id;
+        if (userId) {
+          localStorage.setItem('userId', userId);
+          console.log('✅ userId guardado:', userId);
+        } else {
+          console.warn('⚠️ No se encontró userId en la respuesta del login');
+        }
+        
+        // Guardar el nombre del usuario para el mensaje de bienvenida
+        const userName = data.user?.firstName || data.user?.name || 'Usuario';
+        localStorage.setItem('userName', userName);
+        
+        // También guardar el email por si acaso
+        if (data.user?.email) {
+          localStorage.setItem('userEmail', data.user.email);
+        }
+        
+        console.log('=== DATOS GUARDADOS EN LOCALSTORAGE ===');
+        console.log('authToken guardado:', localStorage.getItem('authToken'));
+        console.log('userId guardado:', localStorage.getItem('userId'));
+        console.log('userData guardado:', localStorage.getItem('userData'));
+        console.log('userName guardado:', localStorage.getItem('userName'));
+        console.log('userEmail guardado:', localStorage.getItem('userEmail'));
+        
+        // Verificar que se guardó correctamente
+        const savedUserData = JSON.parse(localStorage.getItem('userData'));
+        console.log('userData parseado:', savedUserData);
+        console.log('ID del usuario:', savedUserData?._id || savedUserData?.id);
+
+        // Redirigir pasando token en parámetro
+        window.location.href = "/mainDashBoard.html?token=" + encodeURIComponent(data.token);
+      } else {
+        throw new Error("No se recibió token en la respuesta");
+      }
+
+    } catch (error) {
+      showError(emailInput, error.message || 'Error al iniciar sesión');
+      console.error('Error:', error);
+    } finally {
+      loadingSpinner.style.display = 'none';
+      submitButton.disabled = false;
     }
-
-  } catch (error) {
-    showError(emailInput, error.message || 'Error al iniciar sesión');
-    console.error('Error:', error);
-  } finally {
-    loadingSpinner.style.display = 'none';
-    submitButton.disabled = false;
-  }
-});
+  });
 
   // Validación inicial
   validateForm();
