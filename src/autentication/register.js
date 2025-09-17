@@ -17,6 +17,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const reqList = document.getElementById("reqList");
   const cancelBtn = document.getElementById("cancelBtn");
   const registerBtn = document.getElementById("registerBtn");
+  const passwordInput = document.getElementById("password");
+  const showPassword1 = document.getElementById("showPassword1");
+  const confirmPasswordInput = document.getElementById("confirmPassword");
+  const showPassword2 = document.getElementById("showPassword2");
+
+  showPassword1.addEventListener("change", function() {
+  passwordInput.type = this.checked ? "text" : "password";
+  
+  });
+  showPassword2.addEventListener("change", function() {
+  confirmPasswordInput.type = this.checked ? "text" : "password";
+  });
 
   // ✅ Ahora sí: lo ponemos aquí, cuando el botón ya existe
   registerBtn.disabled = true; 
@@ -51,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
       box.style.display = message ? "block" : "none";
     }
   }
-
+  
   function validateRequiredField(input) {
     if (!input.value.trim()) {
       showErrorFor(input, "Este campo es obligatorio");
@@ -84,11 +96,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     const n = Number(val);
     if (!Number.isFinite(n) || n <= 0 || !Number.isInteger(n)) {
-      showErrorFor(age, "Ingresa una edad válida (número entero)");
+      showErrorFor(age, "Ingresa una edad válida (número positivo)");
       return false;
     }
     if (n < 13) {
-      showErrorFor(age, "Debes ser mayor de 12 años");
+      showErrorFor(age, "Debes ser mayor o igual a 13 años");
       return false;
     }
     showErrorFor(age, "");
@@ -131,6 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showErrorFor(confirmPassword, "");
     return true;
   }
+
 
   function checkFormValidity() {
     const okName = validateRequiredField(firstName);
