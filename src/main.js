@@ -20,8 +20,8 @@ document.querySelector('#app').innerHTML = `
     </div>
     <nav class="nav">
       <a href="/">Inicio</a>
-      <a href="#" onclick="showAbout()">About</a>
-      <a href="/login.html">Task Manager</a>
+      <a href="/about.html">About</a>
+      <a href="/login.html">Gestiona tareas</a>
       <a href="/help.html">Ayuda</a>
     </nav>
     <a href="/login.html" class="btn-login">Iniciar sesión</a>

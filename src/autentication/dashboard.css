@@ -52,10 +52,67 @@ body {
 }
 .menu-toggle:hover, .user-icon:hover { color: #ffd700; }
 
+.user-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  min-width: 160px;
+  padding: 0.5rem 0;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.user-menu {
+  position: relative;
+  cursor: pointer;
+}
+
+.user-menu:hover .user-dropdown {
+  display: block;
+}
+
+/* Estilos para los enlaces */
+.user-dropdown a {
+  display: block;
+  padding: 0.7rem 1rem;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #444;
+  transition: background 0.2s, color 0.2s;
+  border-radius: 6px;
+}
+
+.user-dropdown a:hover {
+  background: #f3f4f6;
+  color: #0077ff;
+}
+
+/* Estilo especial para "Cerrar sesión" */
+.user-dropdown a:last-child {
+  color: #d32f2f;
+  font-weight: 600;
+}
+
+.user-dropdown a:last-child:hover {
+  background: #fdecea;
+  color: #b71c1c;
+}
+
+/* Animación de aparición */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 /* ================== SIDE MENU ================== */
 .side-menu {
   position: fixed;
-  top: 70px;
+  top: 80px;
   left: -240px;
   width: 220px;
   height: calc(100% - 70px);
@@ -87,6 +144,17 @@ body {
   color: var(--primary-color);
   font-weight: 700;
 }
+/* Estado normal */
+.board-container {
+  transition: margin-left 0.3s ease;
+}
+
+/* Cuando el menú está abierto */
+.side-menu.open ~ .board-container {
+  margin-left: 220px; /* mismo ancho que el menú */
+}
+
+
 
 /* ================== USER DROPDOWN ================== */
 .user-menu { position: relative; }
@@ -210,52 +278,113 @@ body {
 .task-description { font-size: 0.9rem; color: #666; }
 
 /* ================== FOOTER ================== */
-/* Asegura que la página tenga un layout en columna */
 html, body {
   height: 100%;
+  margin: 100%;
   display: flex;
   flex-direction: column;
 }
 
-/* El contenido principal ocupa todo el espacio disponible */
 main {
-  flex: 1;
+  flex: 1; /* el contenido ocupa todo el espacio */
 }
 
-/* FOOTER */
+body {
+  margin: 0;
+  padding: 0;
+}
+
 .app-footer {
   background: #222;
   color: #fff;
-  padding: 2rem 1rem;
+  padding: 1rem;
   text-align: center;
   font-size: 0.9rem;
   width: 100%;
-  margin-top: auto; /* lo empuja al final */
-}
-
-.app-footer .footer-links {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  flex-wrap: wrap;
-}
-
-.app-footer .footer-links a {
-  color: #ccc;
-  text-decoration: none;
-  transition: color 0.3s;
-}
-
-.app-footer .footer-links a:hover {
-  color: #fff;
 }
 
 
-/* ================== RESPONSIVE ================== */
+
+/* ================== CORRECCIÓN RESPONSIVE ================== */
+
+/* Pantallas grandes */
+@media (max-width: 1200px) {
+  .task-groups {
+    gap: 15px;
+    padding: 15px;
+  }
+  .task-column {
+    min-width: 280px;
+  }
+}
+
+/* Tablets horizontales */
 @media (max-width: 1024px) {
-  .task-groups { flex-direction: column; }
-  .task-column { max-width: 100%; }
+  .board-container {
+    padding: 1rem;
+  }
+  .task-groups {
+    flex-wrap: wrap; /* para que no se achiquen demasiado */
+    justify-content: center;
+  }
+  .task-column {
+    flex: 1 1 45%;
+    max-width: 45%;
+  }
 }
+
+/* Tablets verticales */
+@media (max-width: 768px) {
+  .task-groups {
+    flex-direction: column;
+    align-items: center;
+  }
+  .task-column {
+    width: 100%;
+    max-width: 500px;
+  }
+  .welcome-banner {
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+  }
+}
+
+/* Celulares */
+@media (max-width: 480px) {
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .header-left {
+    flex-direction: column;
+    gap: 6px;
+  }
+  .btn-create {
+    width: 100%;
+    justify-content: center;
+  }
+  .task-column {
+    width: 100%;
+    max-width: 100%;
+    padding: 10px;
+  }
+  .welcome-banner {
+    padding: 10px;
+    font-size: 0.95rem;
+  }
+  .btn-close-banner {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+  }
+  .app-footer {
+    padding: 1.5rem;
+    font-size: 0.8rem;
+  }
+}
+
 /* ================== MODAL ================== */
 .modal {
   display: none; /* Oculto por defecto */
@@ -542,27 +671,3 @@ main.board-container {
     transform: translateY(0);
   }
 }
-.about-link {
-  display: inline-block;
-  padding: 0.6rem 1.2rem;
-  background: #3b82f6;       /* Azul */
-  color: #fff;
-  text-decoration: none;
-  font-size: 0.95rem;
-  font-weight: 500;
-  border-radius: 6px;
-  transition: all 0.3s ease;
-}
-
-/* Hover */
-.about-link:hover {
-  background: #25b3eb;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-}
-
-/* Activo */
-.about-link:active {
-  transform: scale(0.97);
-}
-
