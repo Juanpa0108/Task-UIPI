@@ -1,4 +1,4 @@
-// dashBoard.js (reemplaza tu archivo existente con este)
+// dashBoard.js (versión corregida)
 // --------- CONFIG ----------
 const taskStates = {
   todo: { name: 'Por hacer', class: 'status-todo' },
@@ -12,12 +12,12 @@ const STORAGE_KEY = 'tf_tasks_v1';
 // --------- VARIABLES GLOBALES ----------
 let modal;
 let createTaskBtn, closeModalBtn, cancelModalBtn, saveTaskBtn;
-let taskForm; // IMPORTANT: debe coincidir con id="taskForm" en el HTML
+let taskForm;
 let taskGroups;
 let todoContainer, inProgressContainer, doneContainer;
-let tasks = []; // array de objetos {id, title, description, priority, status, start, end}
+let tasks = [];
 
-// --------- AUTH & WELCOME (si usas token) ----------
+// --------- AUTH & WELCOME ----------
 function checkAuthentication() {
   const params = new URLSearchParams(window.location.search);
   const urlToken = params.get("token");
@@ -29,8 +29,6 @@ function checkAuthentication() {
   }
   if (localToken) return true;
 
-  // Si quieres forzar login, descomenta lo siguiente:
-  // window.location.href = 'login.html';
   return true;
 }
 
@@ -56,25 +54,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (!checkAuthentication()) return;
 
-  // DOM elements (asegúrate que estos ids existen en tu HTML)
+  // DOM elements
   modal = document.getElementById('taskModal');
   createTaskBtn = document.getElementById('createTaskBtn');
   closeModalBtn = document.querySelector('.close-modal');
   cancelModalBtn = document.getElementById('cancelModalBtn');
   saveTaskBtn = document.getElementById('saveTaskBtn');
-  taskForm = document.getElementById('taskForm'); // <-- revisa que exista
+  taskForm = document.getElementById('taskForm');
   taskGroups = document.getElementById('task-groups');
   todoContainer = document.getElementById('todo-tasks');
   inProgressContainer = document.getElementById('inProgress-tasks');
   doneContainer = document.getElementById('done-tasks');
 
-  // sanity checks
   if (!taskForm) console.error('No se encontró #taskForm en el HTML');
-  if (!todoContainer || !inProgressContainer || !doneContainer) console.error('Faltan contenedores de columnas (todo/inProgress/done)');
+  if (!todoContainer || !inProgressContainer || !doneContainer) console.error('Faltan contenedores de columnas');
 
   attachEventListeners();
-  loadTasksFromStorage();
-  renderAllTasks();
+  loadTasksFromAPI(); // Cargar desde API en lugar de localStorage
   checkEmptyContainers();
   showWelcomeMessage();
 });
@@ -83,14 +79,12 @@ function attachEventListeners() {
   if (createTaskBtn) createTaskBtn.addEventListener('click', openModal);
   if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
   if (cancelModalBtn) cancelModalBtn.addEventListener('click', (e) => { e.preventDefault(); closeModal(); });
-  if (saveTaskBtn) saveTaskBtn.addEventListener('click', (e) => { e.preventDefault(); saveAllTasks(); });
+  if (saveTaskBtn) saveTaskBtn.addEventListener('click', (e) => { e.preventDefault(); saveTask(); });
 
-  // close modal if click fuera del contenido
   window.addEventListener('click', (e) => {
     if (e.target === modal) closeModal();
   });
 
-  // menu toggle (si está)
   const menuToggle = document.querySelector('.menu-toggle');
   if (menuToggle) {
     menuToggle.addEventListener('click', () => {
@@ -98,13 +92,11 @@ function attachEventListeners() {
     });
   }
 
-  // user dropdown
   const userIcon = document.querySelector('.user-icon');
   if (userIcon) userIcon.addEventListener('click', () => {
     document.querySelector('.user-menu')?.classList.toggle('open');
   });
 
-  // event delegation para botones dentro de columnas
   document.addEventListener('click', (e) => {
     const btn = e.target.closest('button');
     if (!btn) return;
@@ -120,18 +112,193 @@ function attachEventListeners() {
     } else if (btn.classList.contains('btn-complete')) {
       updateTaskStatusById(taskId, 'done', true);
     } else if (btn.classList.contains('btn-status')) {
-      // mostrar menu de cambio de estado
       showStatusMenu(taskId, btn);
     }
   });
 }
 
-// --------- STORAGE ----------
+// --------- API CALLS ----------
+async function loadTasksFromAPI() {
+  try {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      console.warn("No hay token de autenticación");
+      return;
+    }
+
+    const res = await fetch("http://localhost:4000/api/tasks", {
+      headers: { 
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    const data = await res.json();
+    tasks = data;
+    renderAllTasks();
+    checkEmptyContainers();
+  } catch (err) {
+    console.error("Error cargando tareas:", err);
+    // Fallback a localStorage si falla la API
+    loadTasksFromStorage();
+  }
+}
+
+async function saveTask() {
+  const v = validateForm();
+  if (!v.ok) {
+    alert(v.message);
+    if (v.field) document.getElementById(v.field)?.focus();
+    return;
+  }
+
+  const { title, description, priority, status, start, end } = v.data;
+  const isEditing = taskForm?.getAttribute('data-editing-id');
+
+  try {
+    const token = localStorage.getItem("authToken");
+    const userId = localStorage.getItem("userId");
+    
+    // Si no hay userId, usar el token para obtener info del usuario
+    if (!userId && !token) {
+      alert("No se encontró información de usuario. Por favor, inicia sesión de nuevo.");
+      return;
+    }
+
+    const taskData = { 
+      title, 
+      description, 
+      priority, 
+      status, 
+      start, 
+      end 
+    };
+
+    // Solo incluir userId si existe
+    if (userId) {
+      taskData.user = userId;
+    }
+
+    let url = "http://localhost:4000/api/tasks";
+    let method = "POST";
+
+    if (isEditing) {
+      url = `http://localhost:4000/api/tasks/${isEditing}`;
+      method = "PUT";
+    }
+
+    const res = await fetch(url, {
+      method: method,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(taskData),
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || `HTTP error! status: ${res.status}`);
+    }
+
+    const savedTask = await res.json();
+
+    if (isEditing) {
+      // Actualizar tarea existente
+      const idx = tasks.findIndex(t => t._id === isEditing);
+      if (idx !== -1) {
+        tasks[idx] = savedTask;
+      }
+    } else {
+      // Agregar nueva tarea
+      tasks.push(savedTask);
+    }
+
+    renderAllTasks();
+    closeModal();
+    checkEmptyContainers();
+
+  } catch (err) {
+    console.error("Error guardando tarea:", err);
+    alert("Error al guardar tarea: " + err.message);
+  }
+}
+
+async function deleteTask(taskId) {
+  if (!confirm('¿Estás seguro de que deseas eliminar esta tarea?')) return;
+  
+  try {
+    const token = localStorage.getItem("authToken");
+    const res = await fetch(`http://localhost:4000/api/tasks/${taskId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    // Remover de la lista local
+    tasks = tasks.filter(t => t._id !== taskId);
+    document.getElementById(taskId)?.remove();
+    checkEmptyContainers();
+
+  } catch (err) {
+    console.error("Error eliminando tarea:", err);
+    alert("Error al eliminar tarea: " + err.message);
+  }
+}
+
+async function updateTaskStatusById(taskId, newStatus) {
+  try {
+    const token = localStorage.getItem("authToken");
+    const res = await fetch(`http://localhost:4000/api/tasks/${taskId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ status: newStatus }),
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    const updatedTask = await res.json();
+    
+    // Actualizar en la lista local
+    const idx = tasks.findIndex(t => t._id === taskId);
+    if (idx !== -1) {
+      tasks[idx] = updatedTask;
+    }
+
+    renderAllTasks();
+    checkEmptyContainers();
+
+  } catch (err) {
+    console.error("Error actualizando estado:", err);
+    alert("Error al actualizar estado: " + err.message);
+  }
+}
+
+// --------- STORAGE (fallback) ----------
 function loadTasksFromStorage() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) tasks = JSON.parse(raw);
-    else tasks = [];
+    if (raw) {
+      tasks = JSON.parse(raw);
+      renderAllTasks();
+      checkEmptyContainers();
+    } else {
+      tasks = [];
+    }
   } catch (err) {
     console.error('Error leyendo tasks de localStorage', err);
     tasks = [];
@@ -147,14 +314,12 @@ function openModal() {
   if (!modal) return;
   resetTaskForm();
   modal.style.display = 'block';
-  // focus primer campo si existe
   document.getElementById('taskTitle_0')?.focus();
 }
 
 function closeModal() {
   if (!modal) return;
   modal.style.display = 'none';
-  // quitar editing flag
   taskForm?.removeAttribute('data-editing-id');
 }
 
@@ -162,16 +327,16 @@ function resetTaskForm() {
   if (!taskForm) return;
   taskForm.reset();
   taskForm.removeAttribute('data-editing-id');
-  // Asegurar que selects tengan un valor por defecto
+  
   const pr = document.getElementById('taskPriority_0');
   if (pr && !pr.value) pr.value = 'low';
   const st = document.getElementById('taskStatus_0');
   if (st && !st.value) st.value = 'todo';
 }
 
-// Validación simple: todos los campos obligatorios
 function validateForm() {
   if (!taskForm) return { ok: false, message: 'Formulario no encontrado' };
+  
   const title = document.getElementById('taskTitle_0')?.value?.trim() || '';
   const description = document.getElementById('taskDescription_0')?.value?.trim() || '';
   const priority = document.getElementById('taskPriority_0')?.value || '';
@@ -186,47 +351,15 @@ function validateForm() {
   if (!start) return { ok: false, message: 'La fecha de inicio es obligatoria', field: 'taskStart_0' };
   if (!end) return { ok: false, message: 'La fecha de cierre es obligatoria', field: 'taskEnd_0' };
 
-  // opcional: comprobar que start <= end
-  if (new Date(start) > new Date(end)) return { ok: false, message: 'La fecha de inicio no puede ser posterior a la fecha de cierre', field: 'taskStart_0' };
+  if (new Date(start) > new Date(end)) {
+    return { ok: false, message: 'La fecha de inicio no puede ser posterior a la fecha de cierre', field: 'taskStart_0' };
+  }
 
   return { ok: true, data: { title, description, priority, status, start, end } };
 }
 
-function saveAllTasks() {
-  const v = validateForm();
-  if (!v.ok) {
-    alert(v.message);
-    // focus en campo problemático si se dio
-    if (v.field) document.getElementById(v.field)?.focus();
-    return;
-  }
-  const { title, description, priority, status, start, end } = v.data;
-
-  const editingId = taskForm.getAttribute('data-editing-id');
-  if (editingId) {
-    // actualizar
-    const idx = tasks.findIndex(t => t.id === editingId);
-    if (idx > -1) {
-      tasks[idx] = { ...tasks[idx], title, description, priority, status, start, end };
-    }
-  } else {
-    // crear nueva tarea
-    const newTask = {
-      id: 'task-' + Date.now(),
-      title, description, priority, status, start, end
-    };
-    tasks.push(newTask);
-  }
-
-  saveTasksToStorage();
-  renderAllTasks();
-  closeModal();
-  checkEmptyContainers();
-}
-
 // --------- RENDER ----------
 function renderAllTasks() {
-  // vaciar columnas
   if (todoContainer) todoContainer.innerHTML = '';
   if (inProgressContainer) inProgressContainer.innerHTML = '';
   if (doneContainer) doneContainer.innerHTML = '';
@@ -241,9 +374,9 @@ function renderAllTasks() {
 function createTaskElement(task) {
   const item = document.createElement('div');
   item.className = 'task-item';
-  item.id = task.id;
+  // Usar _id de MongoDB en lugar de id
+  item.id = task._id || task.id;
 
-  // Guardamos datos en dataset para editar fácilmente
   item.dataset.title = task.title;
   item.dataset.description = task.description;
   item.dataset.priority = task.priority;
@@ -273,6 +406,7 @@ function createTaskElement(task) {
 
   const datesDiv = document.createElement('div');
   datesDiv.className = 'task-dates';
+  
   if (task.start) {
     const p1 = document.createElement('p');
     p1.innerHTML = `<strong>Inicio:</strong> ${new Date(task.start).toLocaleString()}`;
@@ -311,7 +445,6 @@ function createTaskElement(task) {
   deleteBtn.type = 'button';
   deleteBtn.innerHTML = '🗑️ Eliminar';
 
-  // si ya está done, no mostrar completar
   if (task.status === 'done') completeBtn.style.display = 'none';
 
   actions.appendChild(editBtn);
@@ -327,7 +460,6 @@ function createTaskElement(task) {
 }
 
 function placeTaskInColumn(taskElement, status) {
-  // remover si ya estaba en alguna columna
   document.querySelectorAll('.task-item').forEach(n => {
     if (n.id === taskElement.id) {
       n.remove();
@@ -337,47 +469,27 @@ function placeTaskInColumn(taskElement, status) {
   if (status === 'todo' && todoContainer) todoContainer.appendChild(taskElement);
   else if (status === 'inProgress' && inProgressContainer) inProgressContainer.appendChild(taskElement);
   else if (status === 'done' && doneContainer) doneContainer.appendChild(taskElement);
-  else if (todoContainer) todoContainer.appendChild(taskElement); // fallback
+  else if (todoContainer) todoContainer.appendChild(taskElement);
 }
 
-// --------- EDIT / DELETE / STATUS ----------
+// --------- EDIT ----------
 function openEditForTask(taskId) {
-  const task = tasks.find(t => t.id === taskId);
+  const task = tasks.find(t => (t._id || t.id) === taskId);
   if (!task) return alert('No se encontró la tarea para editar');
 
-  // Llenar form con valores
   document.getElementById('taskTitle_0').value = task.title;
   document.getElementById('taskDescription_0').value = task.description;
   document.getElementById('taskPriority_0').value = task.priority;
   document.getElementById('taskStatus_0').value = task.status;
-  document.getElementById('taskStart_0').value = task.start;
-  document.getElementById('taskEnd_0').value = task.end;
+  document.getElementById('taskStart_0').value = task.start ? task.start.split('T')[0] : '';
+  document.getElementById('taskEnd_0').value = task.end ? task.end.split('T')[0] : '';
 
   taskForm.setAttribute('data-editing-id', taskId);
   openModal();
 }
 
-function deleteTask(taskId) {
-  if (!confirm('¿Estás seguro de que deseas eliminar esta tarea?')) return;
-  tasks = tasks.filter(t => t.id !== taskId);
-  saveTasksToStorage();
-  // remover del DOM si existe
-  document.getElementById(taskId)?.remove();
-  checkEmptyContainers();
-}
-
-function updateTaskStatusById(taskId, newStatus, dontOpenMenu = false) {
-  const idx = tasks.findIndex(t => t.id === taskId);
-  if (idx === -1) return;
-  tasks[idx].status = newStatus;
-  saveTasksToStorage();
-  renderAllTasks();
-  if (!dontOpenMenu) checkEmptyContainers();
-}
-
-// Menu de cambio de estado simple
+// --------- STATUS MENU ----------
 function showStatusMenu(taskId, buttonEl) {
-  // eliminar cualquier menu existente
   document.querySelectorAll('.status-menu').forEach(m => m.remove());
 
   const menu = document.createElement('div');
@@ -402,14 +514,12 @@ function showStatusMenu(taskId, buttonEl) {
     menu.appendChild(opt);
   });
 
-  // position menu near el botón
   const rect = buttonEl.getBoundingClientRect();
   menu.style.top = `${rect.bottom + window.scrollY + 4}px`;
   menu.style.left = `${rect.left + window.scrollX}px`;
 
   document.body.appendChild(menu);
 
-  // cerrar al click fuera
   setTimeout(() => {
     document.addEventListener('click', function handler(e) {
       if (!menu.contains(e.target) && e.target !== buttonEl) {
