@@ -83,3 +83,57 @@ export function logout() {
   localStorage.removeItem("userData");
   window.location.href = "/login.html";
 }
+
+// ----------------- PARA VER USUARIO  -----------------
+
+// Obtener perfil del usuario logueado
+export async function getUserProfile() {
+  try {
+    const token = localStorage.getItem("authToken");
+
+    if (!token) {
+      throw new Error("No hay token de autenticación");
+    }
+
+    const response = await fetch(`${API_URL}/auth/user`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Error al obtener perfil");
+    }
+
+    return data; // { firstName, lastName, email, age, ... }
+  } catch (error) {
+    console.error("Error en getUserProfile:", error.message);
+    throw error;
+  }
+}
+
+// Actualizar perfil del usuario
+export async function updateUserProfile(userData) {
+  const token = localStorage.getItem("authToken");
+
+  const response = await fetch(`${API_URL}/auth/user`, {  // 👈 ruta correcta
+    method: "PATCH",                                        // 👈 método correcto
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(userData)
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error || "Error al actualizar perfil");
+  }
+
+  return data; // { message: "Perfil actualizado", user: {...} }
+}

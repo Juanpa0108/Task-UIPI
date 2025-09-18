@@ -3,8 +3,7 @@
 import "./register.css";
 import { registerUser } from "../services/authService.js";
 
-// ❌ Esto estaba mal puesto aquí arriba, porque registerBtn aún no existe
-// registerBtn.disabled = true; 
+
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("registerForm");
@@ -213,7 +212,7 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log("Usuario registrado:", data.user);
 
       // Redirigir si quieres
-      // window.location.href = "/login.html";
+      window.location.href = "/login.html";
     } catch (error) {
       alert(`❌ Error: ${error.message}`);
     }
