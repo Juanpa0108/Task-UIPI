@@ -19,10 +19,10 @@ document.querySelector('#app').innerHTML = `
       
     </div>
     <nav class="nav">
-      <a href="#">Inicio</a>
-      <a href="#">About</a>
-      <a href="#">Task Manager</a>
-      <a href="#">Ayuda</a>
+      <a href="/">Inicio</a>
+      <a href="/about.html">About</a>
+      <a href="/login.html">Gestiona tareas</a>
+      <a href="/help.html">Ayuda</a>
     </nav>
     <a href="/login.html" class="btn-login">Iniciar sesión</a>
   </header>
@@ -63,4 +63,20 @@ document.querySelector('#app').innerHTML = `
 
 `
 
+// Función para mostrar información About
+function showAbout() {
+  alert(`TaskFlow v1.0.0
+  
+Una aplicación de gestión de tareas diseñada para ayudarte a organizar tu día de forma sencilla y efectiva.
 
+Características:
+• Crear y gestionar tareas
+• Establecer recordatorios
+• Seguimiento de progreso
+• Interfaz intuitiva
+
+Desarrollado con tecnologías modernas para una experiencia fluida.`);
+}
+
+// Hacer la función disponible globalmente
+window.showAbout = showAbout;

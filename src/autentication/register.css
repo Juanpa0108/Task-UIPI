@@ -163,3 +163,94 @@ body{
   background: #1d253a; /* un poco más oscuro al pasar el mouse */
 }
 
+/* RESPONSIVE  */
+@media (max-width: 1024px) {
+  .card {
+    width: 90%;
+  }
+}
+
+@media (max-width: 768px) {
+  .card {
+    flex-direction: column; /* apila los paneles */
+    width: 100%;
+    max-width: 500px;
+  }
+
+  .panel {
+    width: 100%; /* que ocupen todo */
+    border-right: none;
+    border-bottom: 1px solid rgba(34,41,60,0.04);
+    padding: 24px;
+  }
+
+  .right-panel {
+    border-bottom: none;
+  }
+
+  .welcome {
+    font-size: 1rem;
+    padding: 4px 16px;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+  }
+
+  .field label {
+    font-size: 0.85rem;
+  }
+
+  .input-pill {
+    padding: 10px 14px;
+    font-size: 0.9rem;
+  }
+
+  .requirements li {
+    font-size: 0.8rem;
+  }
+
+  .btn {
+    flex: 1; /* botones del mismo tamaño */
+    text-align: center;
+  }
+
+  .actions {
+    flex-direction: column; /* botones apilados */
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 0;
+    border-radius: 12px;
+  }
+
+  .panel {
+    padding: 18px;
+  }
+
+  .logo {
+    width: 70px;
+    height: 70px;
+  }
+
+  .welcome {
+    font-size: 0.9rem;
+  }
+
+  .subtitle {
+    font-size: 0.8rem;
+  }
+
+  .input-pill {
+    font-size: 0.85rem;
+    padding: 8px 12px;
+  }
+
+  .btn {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+  }
+}
