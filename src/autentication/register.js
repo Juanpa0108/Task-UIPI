@@ -212,8 +212,10 @@ document.addEventListener("DOMContentLoaded", () => {
       alert(`✅ ${data.message}`);
       console.log("Usuario registrado:", data.user);
 
-      // Redirigir si quieres
-      // window.location.href = "/login.html";
+      // Redirigir al login después del registro exitoso
+      setTimeout(() => {
+        window.location.href = "/login.html";
+      }, 1500); // Esperar 1.5 segundos para que el usuario vea el mensaje
     } catch (error) {
       alert(`❌ Error: ${error.message}`);
     }
