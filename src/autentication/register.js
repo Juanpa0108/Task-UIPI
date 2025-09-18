@@ -3,8 +3,7 @@
 import "./register.css";
 import { registerUser } from "../services/authService.js";
 
-// ❌ Esto estaba mal puesto aquí arriba, porque registerBtn aún no existe
-// registerBtn.disabled = true; 
+
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("registerForm");
@@ -212,10 +211,8 @@ document.addEventListener("DOMContentLoaded", () => {
       alert(`✅ ${data.message}`);
       console.log("Usuario registrado:", data.user);
 
-      // Redirigir al login después del registro exitoso
-      setTimeout(() => {
-        window.location.href = "/login.html";
-      }, 1500); // Esperar 1.5 segundos para que el usuario vea el mensaje
+      // Redirigir al usuario al login
+      window.location.href = "/login.html";
     } catch (error) {
       alert(`❌ Error: ${error.message}`);
     }
