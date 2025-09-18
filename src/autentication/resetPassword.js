@@ -1,5 +1,6 @@
 const params = new URLSearchParams(window.location.search);
-const token = params.get("token");
+// El backend envía el enlace con ?id=...
+const token = params.get("id");
 
 const form = document.getElementById("resetForm");
 const resetBtn = document.getElementById("resetBtn");
@@ -68,10 +69,10 @@ form.addEventListener("submit", async (e) => {
   const password = passwordInput.value;
 
   try {
-    const response = await fetch("http://localhost:4000/api/resetPassword", {
+    const response = await fetch(`http://localhost:4000/reset-password?id=${encodeURIComponent(token)}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token, password }),
+      body: JSON.stringify({ password, confirmPassword: password }),
     });
 
     if (response.ok) {
@@ -81,7 +82,7 @@ form.addEventListener("submit", async (e) => {
       }, 1500);
     } else {
       const data = await response.json();
-      alert("⚠️ " + (data.message || "Enlace inválido o caducado."));
+      alert("⚠️ " + (data.error || data.message || "Enlace inválido o caducado."));
     }
   } catch (err) {
     console.error(err);

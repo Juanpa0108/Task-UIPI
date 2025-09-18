@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      const response = await fetch('http://localhost:4000/api/recover-password', {
+      const response = await fetch('http://localhost:4000/forgot-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       alert('✅ Se ha enviado un correo con las instrucciones para recuperar tu contraseña');
-      window.location.href = '/recoverPassword.html';
+      window.location.href = '/login.html';
     } catch (error) {
       alert(`❌ Error: ${error.message}`);
     }
