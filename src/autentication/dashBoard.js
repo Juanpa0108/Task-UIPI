@@ -161,11 +161,9 @@ async function saveTask() {
 
   try {
     const token = localStorage.getItem("authToken");
-    const userId = localStorage.getItem("userId");
     
-    // Si no hay userId, usar el token para obtener info del usuario
-    if (!userId && !token) {
-      alert("No se encontró información de usuario. Por favor, inicia sesión de nuevo.");
+    if (!token) {
+      alert("No se encontró token de autenticación. Por favor, inicia sesión de nuevo.");
       return;
     }
 
@@ -177,11 +175,6 @@ async function saveTask() {
       start, 
       end 
     };
-
-    // Solo incluir userId si existe
-    if (userId) {
-      taskData.user = userId;
-    }
 
     let url = "http://localhost:4000/api/tasks";
     let method = "POST";
@@ -233,15 +226,23 @@ async function deleteTask(taskId) {
   
   try {
     const token = localStorage.getItem("authToken");
+    
+    if (!token) {
+      alert("No se encontró token de autenticación");
+      return;
+    }
+
     const res = await fetch(`http://localhost:4000/api/tasks/${taskId}`, {
       method: "DELETE",
       headers: {
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     });
 
     if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
+      const err = await res.json();
+      throw new Error(err.error || `HTTP error! status: ${res.status}`);
     }
 
     // Remover de la lista local
@@ -258,6 +259,12 @@ async function deleteTask(taskId) {
 async function updateTaskStatusById(taskId, newStatus) {
   try {
     const token = localStorage.getItem("authToken");
+    
+    if (!token) {
+      alert("No se encontró token de autenticación");
+      return;
+    }
+
     const res = await fetch(`http://localhost:4000/api/tasks/${taskId}`, {
       method: "PUT",
       headers: {
@@ -268,7 +275,8 @@ async function updateTaskStatusById(taskId, newStatus) {
     });
 
     if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
+      const err = await res.json();
+      throw new Error(err.error || `HTTP error! status: ${res.status}`);
     }
 
     const updatedTask = await res.json();
