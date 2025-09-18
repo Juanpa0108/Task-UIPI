@@ -161,11 +161,9 @@ async function saveTask() {
 
   try {
     const token = localStorage.getItem("authToken");
-    const userId = localStorage.getItem("userId");
     
-    // Si no hay userId, usar el token para obtener info del usuario
-    if (!userId && !token) {
-      alert("No se encontró información de usuario. Por favor, inicia sesión de nuevo.");
+    if (!token) {
+      alert("No se encontró token de autenticación. Por favor, inicia sesión de nuevo.");
       return;
     }
 
@@ -177,11 +175,6 @@ async function saveTask() {
       start, 
       end 
     };
-
-    // Solo incluir userId si existe
-    if (userId) {
-      taskData.user = userId;
-    }
 
     let url = "http://localhost:4000/api/tasks";
     let method = "POST";
@@ -233,15 +226,23 @@ async function deleteTask(taskId) {
   
   try {
     const token = localStorage.getItem("authToken");
+    
+    if (!token) {
+      alert("No se encontró token de autenticación");
+      return;
+    }
+
     const res = await fetch(`http://localhost:4000/api/tasks/${taskId}`, {
       method: "DELETE",
       headers: {
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     });
 
     if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
+      const err = await res.json();
+      throw new Error(err.error || `HTTP error! status: ${res.status}`);
     }
 
     // Remover de la lista local
@@ -258,6 +259,12 @@ async function deleteTask(taskId) {
 async function updateTaskStatusById(taskId, newStatus) {
   try {
     const token = localStorage.getItem("authToken");
+    
+    if (!token) {
+      alert("No se encontró token de autenticación");
+      return;
+    }
+
     const res = await fetch(`http://localhost:4000/api/tasks/${taskId}`, {
       method: "PUT",
       headers: {
@@ -268,7 +275,8 @@ async function updateTaskStatusById(taskId, newStatus) {
     });
 
     if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
+      const err = await res.json();
+      throw new Error(err.error || `HTTP error! status: ${res.status}`);
     }
 
     const updatedTask = await res.json();
@@ -312,7 +320,18 @@ function saveTasksToStorage() {
 // --------- MODAL & FORM ----------
 function openModal() {
   if (!modal) return;
-  resetTaskForm();
+  
+  // Solo resetear el formulario si no estamos editando
+  const isEditing = taskForm?.getAttribute('data-editing-id');
+  if (!isEditing) {
+    resetTaskForm();
+    // Cambiar el título del modal para nueva tarea
+    const modalTitle = document.querySelector('.modal-header h2');
+    if (modalTitle) {
+      modalTitle.textContent = '📝 Nueva Tarea';
+    }
+  }
+  
   modal.style.display = 'block';
   document.getElementById('taskTitle_0')?.focus();
 }
@@ -321,6 +340,12 @@ function closeModal() {
   if (!modal) return;
   modal.style.display = 'none';
   taskForm?.removeAttribute('data-editing-id');
+  
+  // Resetear el título del modal
+  const modalTitle = document.querySelector('.modal-header h2');
+  if (modalTitle) {
+    modalTitle.textContent = '📝 Nueva Tarea';
+  }
 }
 
 function resetTaskForm() {
@@ -477,14 +502,33 @@ function openEditForTask(taskId) {
   const task = tasks.find(t => (t._id || t.id) === taskId);
   if (!task) return alert('No se encontró la tarea para editar');
 
+  // Llenar el formulario con los datos de la tarea
   document.getElementById('taskTitle_0').value = task.title;
   document.getElementById('taskDescription_0').value = task.description;
   document.getElementById('taskPriority_0').value = task.priority;
   document.getElementById('taskStatus_0').value = task.status;
-  document.getElementById('taskStart_0').value = task.start ? task.start.split('T')[0] : '';
-  document.getElementById('taskEnd_0').value = task.end ? task.end.split('T')[0] : '';
+  
+  // Formatear fechas para datetime-local
+  if (task.start) {
+    const startDate = new Date(task.start);
+    document.getElementById('taskStart_0').value = startDate.toISOString().slice(0, 16);
+  }
+  
+  if (task.end) {
+    const endDate = new Date(task.end);
+    document.getElementById('taskEnd_0').value = endDate.toISOString().slice(0, 16);
+  }
 
+  // Marcar que estamos editando y establecer el ID
   taskForm.setAttribute('data-editing-id', taskId);
+  
+  // Cambiar el título del modal
+  const modalTitle = document.querySelector('.modal-header h2');
+  if (modalTitle) {
+    modalTitle.textContent = '✏️ Editar Tarea';
+  }
+  
+  // Abrir el modal
   openModal();
 }
 
