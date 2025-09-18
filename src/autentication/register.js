@@ -211,7 +211,7 @@ document.addEventListener("DOMContentLoaded", () => {
       alert(`✅ ${data.message}`);
       console.log("Usuario registrado:", data.user);
 
-      // Redirigir si quieres
+      // Redirigir al usuario al login
       window.location.href = "/login.html";
     } catch (error) {
       alert(`❌ Error: ${error.message}`);
