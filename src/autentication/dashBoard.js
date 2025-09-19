@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!todoContainer || !inProgressContainer || !doneContainer) console.error('Faltan contenedores de columnas');
 
   attachEventListeners();
-  loadTasksFromAPI(); // Cargar desde API en lugar de localStorage
+  loadTasksFromAPI(); // Load from API instead of localStorage
   checkEmptyContainers();
   showWelcomeMessage();
 });
@@ -230,7 +230,7 @@ async function loadTasksFromAPI() {
     checkEmptyContainers();
   } catch (err) {
     console.error("Error cargando tareas:", err);
-    // Fallback a localStorage si falla la API
+    // Fallback in Localstorage fails the Api
     loadTasksFromStorage();
   }
 }
@@ -295,13 +295,13 @@ async function saveTask() {
     const savedTask = await res.json();
 
     if (isEditing) {
-      // Actualizar tarea existente
+      // Update existing task
       const idx = tasks.findIndex(t => t._id === isEditing);
       if (idx !== -1) {
         tasks[idx] = savedTask;
       }
     } else {
-      // Agregar nueva tarea
+      // Add new task
       tasks.push(savedTask);
     }
 
@@ -346,7 +346,7 @@ async function deleteTask(taskId) {
       throw new Error(err.error || `HTTP error! status: ${res.status}`);
     }
 
-    // Remover de la lista local
+    // Remove from the local list
     tasks = tasks.filter(t => t._id !== taskId);
     document.getElementById(taskId)?.remove();
     checkEmptyContainers();
@@ -445,11 +445,11 @@ function saveTasksToStorage() {
 function openModal() {
   if (!modal) return;
   
-  // Solo resetear el formulario si no estamos editando
+  // Just reset the form if we are not editing
   const isEditing = taskForm?.getAttribute('data-editing-id');
   if (!isEditing) {
     resetTaskForm();
-    // Cambiar el título del modal para nueva tarea
+    // Change the modal title for new task
     const modalTitle = document.querySelector('.modal-header h2');
     if (modalTitle) {
       modalTitle.textContent = '📝 Nueva Tarea';
@@ -470,7 +470,7 @@ function closeModal() {
   modal.style.display = 'none';
   taskForm?.removeAttribute('data-editing-id');
   
-  // Resetear el título del modal
+  // Reset the title of the Modal
   const modalTitle = document.querySelector('.modal-header h2');
   if (modalTitle) {
     modalTitle.textContent = '📝 Nueva Tarea';
@@ -552,7 +552,7 @@ function renderAllTasks() {
 function createTaskElement(task) {
   const item = document.createElement('div');
   item.className = 'task-item';
-  // Usar _id de MongoDB en lugar de id
+  // Use _id from Mongodb instead of ID
   item.id = task._id || task.id;
 
   item.dataset.title = task.title;
@@ -669,13 +669,13 @@ function openEditForTask(taskId) {
   const task = tasks.find(t => (t._id || t.id) === taskId);
   if (!task) return alert('No se encontró la tarea para editar');
 
-  // Llenar el formulario con los datos de la tarea
+  // Fill the form with task data
   document.getElementById('taskTitle_0').value = task.title;
   document.getElementById('taskDescription_0').value = task.description;
   document.getElementById('taskPriority_0').value = task.priority;
   document.getElementById('taskStatus_0').value = task.status;
   
-  // Formatear fechas para datetime-local
+  // format dates for datetime-local
   if (task.start) {
     const startDate = new Date(task.start);
     document.getElementById('taskStart_0').value = startDate.toISOString().slice(0, 16);
@@ -686,16 +686,16 @@ function openEditForTask(taskId) {
     document.getElementById('taskEnd_0').value = endDate.toISOString().slice(0, 16);
   }
 
-  // Marcar que estamos editando y establecer el ID
+  // mark that we are editing and establish the ID
   taskForm.setAttribute('data-editing-id', taskId);
   
-  // Cambiar el título del modal
+  // Change the modal title
   const modalTitle = document.querySelector('.modal-header h2');
   if (modalTitle) {
     modalTitle.textContent = '✏️ Editar Tarea';
   }
   
-  // Abrir el modal
+  // Open the Modal
   openModal();
 }
 
