@@ -119,6 +119,43 @@ document.addEventListener('DOMContentLoaded', () => {
  * @returns {void}
  */
 function attachEventListeners() {
+
+    // ---- Validación de límites de caracteres ----
+  const titleInput = document.getElementById("taskTitle_0");
+  const descInput = document.getElementById("taskDescription_0");
+
+  if (titleInput) {
+    const titleWarning = document.createElement("small");
+    titleWarning.style.color = "red";
+    titleWarning.style.display = "none";
+    titleInput.parentNode.appendChild(titleWarning);
+
+    titleInput.addEventListener("input", () => {
+      if (titleInput.value.length >= 50) {
+        titleWarning.textContent = "⚠️ El título no puede superar los 50 caracteres";
+        titleWarning.style.display = "block";
+      } else {
+        titleWarning.style.display = "none";
+      }
+    });
+  }
+
+  if (descInput) {
+    const descWarning = document.createElement("small");
+    descWarning.style.color = "red";
+    descWarning.style.display = "none";
+    descInput.parentNode.appendChild(descWarning);
+
+    descInput.addEventListener("input", () => {
+      if (descInput.value.length >= 500) {
+        descWarning.textContent = "⚠️ La descripción no puede superar los 500 caracteres";
+        descWarning.style.display = "block";
+      } else {
+        descWarning.style.display = "none";
+      }
+    });
+  }
+
   if (createTaskBtn) createTaskBtn.addEventListener('click', openModal);
   if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
   if (cancelModalBtn) cancelModalBtn.addEventListener('click', (e) => { e.preventDefault(); closeModal(); });
@@ -473,7 +510,8 @@ function validateForm() {
   const end = document.getElementById('taskEnd_0')?.value || '';
 
   if (!title) return { ok: false, message: 'El título es obligatorio', field: 'taskTitle_0' };
-  if (!description) return { ok: false, message: 'La descripción es obligatoria', field: 'taskDescription_0' };
+  if (!title.length > 50) return {ok: false, massage:'El titulo no puede superar los 50 caracteres', fiekd: 'taskTitle_0'}
+  if (!description.length > 500) return { ok: false, message: 'La descripción no puede superar 500 caracteres', field: 'taskDescription_0' };
   if (!priority) return { ok: false, message: 'La prioridad es obligatoria', field: 'taskPriority_0' };
   if (!status) return { ok: false, message: 'El estado es obligatorio', field: 'taskStatus_0' };
   if (!start) return { ok: false, message: 'La fecha de inicio es obligatoria', field: 'taskStart_0' };

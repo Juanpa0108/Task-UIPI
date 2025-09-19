@@ -6,6 +6,12 @@ body {
   color: #2a2a2a;
 }
 
+/* ✅ Evita scroll lateral */
+html, body {
+  width: 100%;
+  overflow-x: hidden;
+}
+
 /* Header */
 .profile-header {
   display: flex;
@@ -16,6 +22,7 @@ body {
   border-bottom: 1px solid #e0e6f7;
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
   flex-wrap: wrap;
+  box-sizing: border-box;
 }
 
 .profile-header nav {
@@ -64,11 +71,12 @@ body {
   background: #fff;
   border-radius: 20px;
   padding: 40px;
-  width: 700px;
-  max-width: 95%;
-  margin: 50px auto;
+  max-width: 700px;        /* límite en pantallas grandes */
+  width: 100%;             /* ocupa todo el ancho disponible en móviles */
+  margin: 50px auto;       /* centrada */
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   animation: fadeIn 0.5s ease;
+  box-sizing: border-box;  /* asegura que padding no desborde */
 }
 
 @keyframes fadeIn {
@@ -90,6 +98,8 @@ h2 {
   grid-template-columns: 1fr 1fr;
   gap: 25px 35px;
   margin-bottom: 20px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .form-group {
@@ -111,6 +121,8 @@ h2 {
   font-size: 14px;
   background: #f8faff;
   transition: all 0.3s ease;
+  width: 100%;             /* ✅ evita desbordes */
+  box-sizing: border-box;
 }
 
 .form-group input:focus {
@@ -130,8 +142,8 @@ h2 {
   display: flex;
   justify-content: center; 
   gap: 20px;
+  flex-wrap: wrap;
 }
-
 
 button {
   min-width: 130px;
