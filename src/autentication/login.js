@@ -1,6 +1,16 @@
 import './login.css';
 import { loginUser } from "../services/authService.js";
 
+/**
+ * Handles the login form logic, including:
+ * - Input validation for email and password
+ * - Showing error messages with ARIA announcements
+ * - Toggling password visibility
+ * - Submitting credentials to the authentication service
+ * - Persisting authentication data into localStorage
+ * - Redirecting to the main dashboard after successful login
+ */
+
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('loginForm');
   const emailInput = document.getElementById('email');
@@ -10,12 +20,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const errorAnnouncer = document.getElementById('errorAnnouncer');
   const showPasswordCheckbox = document.getElementById('showPassword');
 
-  // Validación de email según RFC 5322
+    /**
+   * Validate email format based on RFC 5322 standard.
+   * @param {string} email - The email string to validate.
+   * @returns {boolean} True if email is valid, false otherwise.
+   */
+
   function isValidEmail(email) {
     const re = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
     return re.test(email);
   }
 
+   /**
+   * Display an error message for a given input element and update ARIA announcer.
+   * @param {HTMLElement} element - The input element associated with the error.
+   * @param {string} message - The error message to display.
+   */
   function showError(element, message) {
     const errorDiv = document.getElementById(`${element.id}Error`);
     if (errorDiv) {
@@ -23,12 +43,17 @@ document.addEventListener('DOMContentLoaded', () => {
       errorDiv.style.display = message ? 'block' : 'none';
       element.classList.toggle('field-error', Boolean(message));
       
-      // Actualizar el anunciador ARIA
+      // Update ARIA announcer for accessibility
       if (message) {
         errorAnnouncer.textContent = `Error en ${element.id}: ${message}`;
       }
     }
   }
+  
+  /**
+   * Validate the login form fields (email and password).
+   * @returns {boolean} True if both fields are valid, false otherwise.
+   */
 
   function validateForm() {
     const emailValid = isValidEmail(emailInput.value.trim());
@@ -42,29 +67,37 @@ document.addEventListener('DOMContentLoaded', () => {
     return emailValid && passwordValid;
   }
 
-  // Mostrar/ocultar contraseña
+  // Toggle password visibility
   showPasswordCheckbox.addEventListener('change', function() {
     passwordInput.type = this.checked ? 'text' : 'password';
   });
 
-  // Validación en tiempo real
+  // Real-time validation for email
   emailInput.addEventListener('input', function() {
     showError(emailInput, '');
     validateForm();
   });
-
+    // Real-time validation for password
   passwordInput.addEventListener('input', function() {
     showError(passwordInput, '');
     validateForm();
   });
 
-  // Manejo del formulario de login
+    /**
+   * Handle login form submission:
+   * - Validate fields
+   * - Show loading spinner
+   * - Call login service
+   * - Save authentication data in localStorage
+   * - Redirect to dashboard if successful
+   */
+
   form.addEventListener('submit', async function(e) {
     e.preventDefault();
 
     if (!validateForm()) return;
 
-    // Mostrar spinner y deshabilitar botón
+    // Show spinner and disable submit button
     loadingSpinner.style.display = 'inline-block';
     submitButton.disabled = true;
 
@@ -83,11 +116,11 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log('data.user.firstName:', data.user?.firstName);
 
       if (data.token) {
-        // Guardar token y datos del usuario
+        // Save token and user data in localStorage
         localStorage.setItem('authToken', data.token);
         localStorage.setItem('userData', JSON.stringify(data.user));
         
-        // ⭐ ESTO ES LO IMPORTANTE: Guardar el userId
+        // Save userId for later use
         const userId = data.user?._id || data.user?.id;
         if (userId) {
           localStorage.setItem('userId', userId);
@@ -96,11 +129,11 @@ document.addEventListener('DOMContentLoaded', () => {
           console.warn('⚠️ No se encontró userId en la respuesta del login');
         }
         
-        // Guardar el nombre del usuario para el mensaje de bienvenida
+        // Save user name for welcome message
         const userName = data.user?.firstName || data.user?.name || 'Usuario';
         localStorage.setItem('userName', userName);
         
-        // También guardar el email por si acaso
+        // Save email if available
         if (data.user?.email) {
           localStorage.setItem('userEmail', data.user.email);
         }
@@ -112,12 +145,12 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('userName guardado:', localStorage.getItem('userName'));
         console.log('userEmail guardado:', localStorage.getItem('userEmail'));
         
-        // Verificar que se guardó correctamente
+        // Verify that userData is stored correctly
         const savedUserData = JSON.parse(localStorage.getItem('userData'));
         console.log('userData parseado:', savedUserData);
         console.log('ID del usuario:', savedUserData?._id || savedUserData?.id);
 
-        // Redirigir pasando token en parámetro
+        // Redirect to dashboard with token in query param
         window.location.href = "/mainDashBoard.html?token=" + encodeURIComponent(data.token);
       } else {
         throw new Error("No se recibió token en la respuesta");
@@ -132,6 +165,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Validación inicial
+  // Initial form validation
   validateForm();
 });

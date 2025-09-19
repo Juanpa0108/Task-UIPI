@@ -1,11 +1,22 @@
 
-
+/**
+ * Handles the password recovery form logic, including:
+ * - Validating the email input field
+ * - Displaying inline error messages
+ * - Enabling/disabling the submit button
+ * - Sending a recovery request to the backend
+ * - Redirecting to the login page on success
+ */
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('recoverForm');
   const email = document.getElementById('email');
   const submitBtn = document.getElementById('submitBtn');
   const backToLoginBtn = document.getElementById('backToLoginBtn');
-
+  /**
+   * Display or hide an error message for the specified input element.
+   * @param {HTMLElement} element - The input element associated with the error.
+   * @param {string} message - The error message to display. If empty, the error is hidden.
+   */
   function showError(element, message) {
     const errorBox = document.querySelector(`.error[data-for="${element.id}"]`);
     if (errorBox) {
@@ -14,6 +25,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  /**
+   * Validate the email input.
+   * Checks for required field and basic email format.
+   * @returns {boolean} True if the email is valid, false otherwise.
+   */
   function validateEmail() {
     const value = email.value.trim();
     if (!value) {
@@ -28,22 +44,33 @@ document.addEventListener('DOMContentLoaded', () => {
     showError(email, '');
     return true;
   }
-
+   /**
+   * Check the form validity and enable/disable the submit button accordingly.
+   */
   function checkFormValidity() {
     const isEmailValid = validateEmail();
     submitBtn.disabled = !isEmailValid;
   }
 
-  // Event Listeners
+  // Real-time email validation
   email.addEventListener('input', () => {
     validateEmail();
     checkFormValidity();
   });
-
+    // Redirect back to login page
   backToLoginBtn.addEventListener('click', (e) => {
     e.preventDefault();
     window.location.href = '/login.html';
   });
+
+  /**
+   * Handle the recovery form submission:
+   * - Prevents default form submission
+   * - Validates the email
+   * - Sends a POST request to the backend
+   * - Alerts user of success or failure
+   * - Redirects to login page on success
+   */
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();

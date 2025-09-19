@@ -1,15 +1,27 @@
 // dashBoard.js (versión corregida)
 // --------- CONFIG ----------
+/**
+ * Object representing the available task states.
+ * Each state contains a human-readable name and a CSS class for styling.
+ * @type {Object<string, {name: string, class: string}>}
+ */
 const taskStates = {
   todo: { name: 'Por hacer', class: 'status-todo' },
   inProgress: { name: 'En proceso', class: 'status-in-progress' },
   done: { name: 'Terminada', class: 'status-done' }
 };
 
-// Storage key
+/**
+ * Key used for saving and loading tasks in localStorage.
+ * @type {string}
+ */
 const STORAGE_KEY = 'tf_tasks_v1';
 
-// --------- VARIABLES GLOBALES ----------
+// --------- GLOBAL VARIABLES ----------
+/**
+ * Modal element reference.
+ * @type {HTMLElement|null}
+ */
 let modal;
 let createTaskBtn, closeModalBtn, cancelModalBtn, saveTaskBtn;
 let taskForm;
@@ -18,6 +30,12 @@ let todoContainer, inProgressContainer, doneContainer;
 let tasks = [];
 
 // --------- AUTH & WELCOME ----------
+/**
+ * Checks if the user is authenticated via URL token or localStorage.
+ * Stores the token in localStorage if found in the URL.
+ * 
+ * @returns {boolean} True if a token is found or assumed; false otherwise.
+ */
 function checkAuthentication() {
   const params = new URLSearchParams(window.location.search);
   const urlToken = params.get("token");
@@ -31,7 +49,12 @@ function checkAuthentication() {
 
   return true;
 }
-
+/**
+ * Displays a welcome banner message with the stored user name.
+ * The banner auto-hides after 5 seconds.
+ *
+ * @returns {void}
+ */
 function showWelcomeMessage() {
   const welcomeBanner = document.getElementById('welcomeBanner');
   const welcomeMessage = document.getElementById('welcomeMessage');
@@ -42,13 +65,28 @@ function showWelcomeMessage() {
   welcomeBanner.style.display = 'flex';
   setTimeout(closeWelcomeBanner, 5000);
 }
-
+/**
+ * Hides the welcome banner from the DOM.
+ *
+ * @function
+ * @returns {void}
+ */
 window.closeWelcomeBanner = function() {
   const welcomeBanner = document.getElementById('welcomeBanner');
   if (welcomeBanner) welcomeBanner.style.display = 'none';
 };
 
 // --------- INIT ----------
+/**
+ * Initializes the dashboard once DOM content has fully loaded.
+ * - Verifies authentication
+ * - Retrieves and binds DOM elements
+ * - Sets event listeners
+ * - Loads tasks from API or storage fallback
+ * - Shows welcome message
+ *
+ * @event DOMContentLoaded
+ */
 document.addEventListener('DOMContentLoaded', () => {
   console.log('DOM cargado, iniciando dashboard...');
 
@@ -75,6 +113,11 @@ document.addEventListener('DOMContentLoaded', () => {
   showWelcomeMessage();
 });
 
+/**
+ * Attaches all required event listeners for modal, buttons, and UI interactions.
+ *
+ * @returns {void}
+ */
 function attachEventListeners() {
   if (createTaskBtn) createTaskBtn.addEventListener('click', openModal);
   if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
@@ -118,6 +161,13 @@ function attachEventListeners() {
 }
 
 // --------- API CALLS ----------
+/**
+ * Loads all tasks from the backend API.
+ * If the request fails, falls back to localStorage.
+ *
+ * @async
+ * @returns {Promise<void>}
+ */
 async function loadTasksFromAPI() {
   try {
     const token = localStorage.getItem("authToken");
@@ -148,6 +198,13 @@ async function loadTasksFromAPI() {
   }
 }
 
+/**
+ * Saves a new or existing task to the backend API.
+ * If editing, updates the task; otherwise creates a new one.
+ *
+ * @async
+ * @returns {Promise<void>}
+ */
 async function saveTask() {
   const v = validateForm();
   if (!v.ok) {
@@ -221,6 +278,13 @@ async function saveTask() {
   }
 }
 
+/**
+ * Deletes a task from the backend API and removes it from local state.
+ *
+ * @async
+ * @param {string} taskId - The unique ID of the task to delete.
+ * @returns {Promise<void>}
+ */
 async function deleteTask(taskId) {
   if (!confirm('¿Estás seguro de que deseas eliminar esta tarea?')) return;
   
@@ -256,6 +320,14 @@ async function deleteTask(taskId) {
   }
 }
 
+/**
+ * Updates the status of a specific task by ID.
+ *
+ * @async
+ * @param {string} taskId - The unique ID of the task.
+ * @param {string} newStatus - The new status to assign to the task.
+ * @returns {Promise<void>}
+ */
 async function updateTaskStatusById(taskId, newStatus) {
   try {
     const token = localStorage.getItem("authToken");
@@ -297,6 +369,11 @@ async function updateTaskStatusById(taskId, newStatus) {
 }
 
 // --------- STORAGE (fallback) ----------
+/**
+ * Loads tasks from localStorage into memory.
+ *
+ * @returns {void}
+ */
 function loadTasksFromStorage() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -313,11 +390,21 @@ function loadTasksFromStorage() {
   }
 }
 
+/**
+ * Saves all tasks into localStorage.
+ *
+ * @returns {void}
+ */
 function saveTasksToStorage() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
 }
 
 // --------- MODAL & FORM ----------
+/**
+ * Opens the modal for creating or editing tasks.
+ *
+ * @returns {void}
+ */
 function openModal() {
   if (!modal) return;
   
@@ -336,6 +423,11 @@ function openModal() {
   document.getElementById('taskTitle_0')?.focus();
 }
 
+/**
+ * Closes the modal and resets edit state.
+ *
+ * @returns {void}
+ */
 function closeModal() {
   if (!modal) return;
   modal.style.display = 'none';
@@ -348,6 +440,11 @@ function closeModal() {
   }
 }
 
+/**
+ * Resets the task form to default values.
+ *
+ * @returns {void}
+ */
 function resetTaskForm() {
   if (!taskForm) return;
   taskForm.reset();
@@ -359,6 +456,12 @@ function resetTaskForm() {
   if (st && !st.value) st.value = 'todo';
 }
 
+
+/**
+ * Validates the task form fields.
+ *
+ * @returns {{ok: boolean, message?: string, field?: string, data?: Object}}
+ */
 function validateForm() {
   if (!taskForm) return { ok: false, message: 'Formulario no encontrado' };
   
@@ -384,6 +487,11 @@ function validateForm() {
 }
 
 // --------- RENDER ----------
+/**
+ * Renders all tasks into their corresponding columns.
+ *
+ * @returns {void}
+ */
 function renderAllTasks() {
   if (todoContainer) todoContainer.innerHTML = '';
   if (inProgressContainer) inProgressContainer.innerHTML = '';
@@ -395,6 +503,13 @@ function renderAllTasks() {
   });
   checkEmptyContainers();
 }
+
+/**
+ * Creates a DOM element for a single task.
+ *
+ * @param {Object} task - The task object with its properties.
+ * @returns {HTMLElement} The task DOM element.
+ */
 
 function createTaskElement(task) {
   const item = document.createElement('div');
@@ -484,6 +599,13 @@ function createTaskElement(task) {
   return item;
 }
 
+/**
+ * Places a task element into the correct column based on status.
+ *
+ * @param {HTMLElement} taskElement - The task DOM element.
+ * @param {string} status - The task status ("todo", "inProgress", or "done").
+ * @returns {void}
+ */
 function placeTaskInColumn(taskElement, status) {
   document.querySelectorAll('.task-item').forEach(n => {
     if (n.id === taskElement.id) {
@@ -498,6 +620,13 @@ function placeTaskInColumn(taskElement, status) {
 }
 
 // --------- EDIT ----------
+/**
+ * Opens the modal for editing an existing task.
+ * Pre-fills the form with task data.
+ *
+ * @param {string} taskId - The unique ID of the task.
+ * @returns {void}
+ */
 function openEditForTask(taskId) {
   const task = tasks.find(t => (t._id || t.id) === taskId);
   if (!task) return alert('No se encontró la tarea para editar');
@@ -533,6 +662,14 @@ function openEditForTask(taskId) {
 }
 
 // --------- STATUS MENU ----------
+/**
+ * Displays a dropdown menu to change the task status.
+ *
+ * @param {string} taskId - The unique ID of the task.
+ * @param {HTMLElement} buttonEl - The button triggering the menu.
+ * @returns {void}
+ */
+
 function showStatusMenu(taskId, buttonEl) {
   document.querySelectorAll('.status-menu').forEach(m => m.remove());
 
@@ -574,7 +711,12 @@ function showStatusMenu(taskId, buttonEl) {
   }, 0);
 }
 
-// --------- UTILIDADES ----------
+// --------- UTILITIES ----------
+/**
+ * Checks if task containers are empty and displays a placeholder message if so.
+ *
+ * @returns {void}
+ */
 function checkEmptyContainers() {
   function check(container, message) {
     if (!container) return;

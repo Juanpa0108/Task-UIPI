@@ -1,34 +1,40 @@
 import "./help.css";
 
 document.addEventListener("DOMContentLoaded", () => {
-  // --- Lógica del FAQ ---
+  /**
+  * FAQ Toggle Logic
+  * - Expands or collapses the selected answer.
+  * - Ensures only one answer is open at a time.
+  */  
   const questions = document.querySelectorAll(".faq-question");
 
   questions.forEach((btn) => {
     btn.addEventListener("click", () => {
       const answer = btn.nextElementSibling;
 
-      // Cierra las demás respuestas abiertas
+      // Close any other open answers
       document.querySelectorAll(".faq-answer.open").forEach(openAnswer => {
         if (openAnswer !== answer) {
           openAnswer.classList.remove("open");
         }
       });
 
-      // Alterna la respuesta actual
+      // Toggle the current answer
       answer.classList.toggle("open");
     });
   });
 
-  // --- Lógica del botón Volver ---
+  /**
+  * "Back" Button Logic
+  * - Navigates to the previous page if available.
+  * - If no history exists, redirects to the home page.
+  */  
   const btnVolver = document.getElementById("btnVolver");
   if (btnVolver) {
     btnVolver.addEventListener("click", () => {
-      // Volver a la página anterior
       if (window.history.length > 1) {
         window.history.back();
       } else {
-        // Si no hay historial, ir a la página principal
         window.location.href = "/";
       }
     });

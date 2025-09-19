@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const showPassword1 = document.getElementById("showPassword1");
   const confirmPasswordInput = document.getElementById("confirmPassword");
   const showPassword2 = document.getElementById("showPassword2");
-
+   // Toggle password visibility
   showPassword1.addEventListener("change", function() {
   passwordInput.type = this.checked ? "text" : "password";
   
@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
   confirmPasswordInput.type = this.checked ? "text" : "password";
   });
 
-  // ✅ Ahora sí: lo ponemos aquí, cuando el botón ya existe
+  // Ensure register button is initially disabled
   registerBtn.disabled = true; 
 
   if (
@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.error("Elementos del formulario no encontrados. Revisa IDs en el HTML.");
     return;
   }
-
+    // Password requirements indicators
   const reqItems = {
     length: reqList.querySelector('[data-check="length"]'),
     uppercase: reqList.querySelector('[data-check="uppercase"]'),
@@ -55,6 +55,11 @@ document.addEventListener("DOMContentLoaded", () => {
     special: reqList.querySelector('[data-check="special"]'),
   };
 
+  /**
+   * Show or hide error message for a given field.
+   * @param {HTMLElement} el - Input element.
+   * @param {string} message - Error message to display.
+   */
   function showErrorFor(el, message) {
     const box = document.querySelector(`.error[data-for="${el.id}"]`);
     if (box) {
@@ -62,7 +67,12 @@ document.addEventListener("DOMContentLoaded", () => {
       box.style.display = message ? "block" : "none";
     }
   }
-  
+
+  /**
+   * Validate required text fields (first name, last name).
+   * @param {HTMLInputElement} input - Input element to validate.
+   * @returns {boolean} True if field is valid, false otherwise.
+   */
   function validateRequiredField(input) {
     if (!input.value.trim()) {
       showErrorFor(input, "Este campo es obligatorio");
@@ -71,7 +81,10 @@ document.addEventListener("DOMContentLoaded", () => {
     showErrorFor(input, "");
     return true;
   }
-
+  /**
+   * Validate email format.
+   * @returns {boolean} True if valid, false otherwise.
+   */
   function validateEmailField() {
     const val = email.value.trim();
     if (!val) {
@@ -86,7 +99,11 @@ document.addEventListener("DOMContentLoaded", () => {
     showErrorFor(email, "");
     return true;
   }
-
+  /**
+   * Validate age input.
+   * Must be a positive integer and >= 13.
+   * @returns {boolean} True if valid, false otherwise.
+   */
   function validateAgeField() {
     const val = age.value.trim();
     if (!val) {
@@ -105,7 +122,12 @@ document.addEventListener("DOMContentLoaded", () => {
     showErrorFor(age, "");
     return true;
   }
-
+  /**
+   * Validate password field against requirements:
+   * - Minimum 8 characters
+   * - At least one uppercase, one lowercase, one number, one special character
+   * @returns {boolean} True if password meets requirements, false otherwise.
+   */
   function validatePasswordField() {
     const val = password.value || "";
     const tests = {
@@ -128,7 +150,11 @@ document.addEventListener("DOMContentLoaded", () => {
     else showErrorFor(password, "");
     return allOk;
   }
-
+  /**
+   * Validate confirm password field.
+   * Must match the password field.
+   * @returns {boolean} True if passwords match, false otherwise.
+   */
   function validateConfirmPassword() {
     const val = confirmPassword.value || "";
     if (!val) {
@@ -143,7 +169,9 @@ document.addEventListener("DOMContentLoaded", () => {
     return true;
   }
 
-
+  /**
+   * Check the validity of all form fields and enable/disable the register button.
+   */
   function checkFormValidity() {
     const okName = validateRequiredField(firstName);
     const okLast = validateRequiredField(lastName);
@@ -155,7 +183,7 @@ document.addEventListener("DOMContentLoaded", () => {
     registerBtn.disabled = !(okName && okLast && okAge && okEmail && okPass && okConfirm);
   }
 
-  // Listeners
+  // Input listeners for validation
   [firstName, lastName].forEach((el) =>
     el.addEventListener("input", () => {
       validateRequiredField(el);
@@ -184,13 +212,18 @@ document.addEventListener("DOMContentLoaded", () => {
     checkFormValidity();
   });
 
+  // Cancel button handler
   cancelBtn.addEventListener("click", () => {
     if (window.location.pathname.endsWith("/register.html")) window.location.href = "/index.html";
     else window.history.back();
   });
 
-  // 🚀 Aquí es donde usamos el servicio
-  form.addEventListener("submit", async (e) => {
+  /**
+   * Handle form submission:
+   * - Validate all fields
+   * - Send registration payload to backend
+   * - Redirect to login page on success
+   */  form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     if (registerBtn.disabled) {
@@ -207,11 +240,11 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     try {
-      const data = await registerUser(payload); //  llamada real al backend :)
+      const data = await registerUser(payload); // Backend call
       alert(`✅ ${data.message}`);
       console.log("Usuario registrado:", data.user);
 
-      // Redirigir al usuario al login
+      // Redirect to login page
       window.location.href = "/login.html";
     } catch (error) {
       alert(`❌ Error: ${error.message}`);
