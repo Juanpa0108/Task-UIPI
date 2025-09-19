@@ -5,59 +5,69 @@ import { getUserProfile, updateUserProfile } from "../services/authService.js";
 const backBtn = document.getElementById("backBtn");
 const editBtn = document.getElementById("editBtn");
 
+  /**
+   * Loads the user profile on page initialization.
+   * - Fetches the user data from the backend.
+   * - Populates the form fields with user information.
+   * - Sets the inputs to read-only mode initially.
+   */
 document.addEventListener("DOMContentLoaded", async () => {
   try {
-    const response = await getUserProfile(); // devuelve { user: {...} }
+    const response = await getUserProfile(); // returns { user: {...} }
     const user = response.user;              // ✅ sacamos el objeto user
     console.log("📌 Usuario:", user);
 
-    const nombreEl = document.getElementById("nombre");
-    const apellidosEl = document.getElementById("apellidos");
+    const nameEl = document.getElementById("nombre");
+    const lastNameEl = document.getElementById("apellidos");
     const emailEl = document.getElementById("email");
     const ageEl = document.getElementById("Age");
 
-    nombreEl.value = user.firstName || "";
-    apellidosEl.value = user.lastName || "";
+    nameEl.value = user.firstName || "";
+    lastNameEl.value = user.lastName || "";
     emailEl.value = user.email || "";
     ageEl.value = user.age || "";
 
-    // Iniciar en modo solo lectura
-    [nombreEl, apellidosEl, emailEl, ageEl].forEach((el) => el.setAttribute("disabled", "true"));
+    // Start in read-only mode
+    [nameEl, lastNameEl, emailEl, ageEl].forEach((el) => el.setAttribute("disabled", "true"));
     editBtn.textContent = "Editar Información";
   } catch (error) {
     console.error("Error cargando perfil:", error.message);
   }
 });
 
-// Botón editar/guardar: alterna entre modos
+/**
+ * Edit/Save button logic
+ * - Toggles between read-only mode and edit mode.
+ * - When saving, updates the user profile on the backend.
+ */
 editBtn.addEventListener("click", async () => {
-  const nombreEl = document.getElementById("nombre");
-  const apellidosEl = document.getElementById("apellidos");
+  const nameEl = document.getElementById("nombre");
+  const lastNameEl = document.getElementById("apellidos");
   const emailEl = document.getElementById("email");
   const ageEl = document.getElementById("Age");
 
-  const isReadOnly = nombreEl.hasAttribute("disabled");
+  const isReadOnly = nameEl.hasAttribute("disabled");
 
   if (isReadOnly) {
-    // Pasar a modo edición
-    [nombreEl, apellidosEl, emailEl, ageEl].forEach((el) => el.removeAttribute("disabled"));
+    // Switch to edit mode
+    [nameEl, lastNameEl, emailEl, ageEl].forEach((el) => el.removeAttribute("disabled"));
     editBtn.textContent = "Guardar cambios";
-    nombreEl.focus();
+    nameEl.focus();
     return;
   }
 
-  // Guardar cambios
+  // Save changes
   const payload = {
-    firstName: nombreEl.value.trim(),
-    lastName: apellidosEl.value.trim(),
+    firstName: nameEl.value.trim(),
+    lastName: lastNameEl.value.trim(),
     email: emailEl.value.trim(),
     age: Number(ageEl.value) || undefined,
   };
 
   try {
     const res = await updateUserProfile(payload);
-    // Volver a modo solo lectura
-    [nombreEl, apellidosEl, emailEl, ageEl].forEach((el) => el.setAttribute("disabled", "true"));
+    // Return to read-only mode
+    [nameEl, lastNameEl, emailEl, ageEl].forEach((el) => el.setAttribute("disabled", "true"));
     editBtn.textContent = "Editar Información";
     alert(res.message || "Perfil actualizado con éxito ✅");
   } catch (error) {
@@ -65,7 +75,10 @@ editBtn.addEventListener("click", async () => {
   }
 });
 
-// ✅ Botón volver
+/**
+ * "Back" button logic
+ * - Redirects the user to the main dashboard.
+ */
 backBtn.addEventListener("click", () => {
   window.location.href = "./mainDashBoard.html"; 
 });

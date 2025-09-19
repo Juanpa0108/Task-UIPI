@@ -1,6 +1,14 @@
 import './style.css'
 
-
+/**
+ * Injects the main HTML structure of the TaskFlow application
+ * into the element with the id "app".  
+ * 
+ * The injected structure includes:
+ * - Header: logo, navigation menu, and login button.
+ * - Main (Hero section): introductory text, description, image, and register button.
+ * - Footer: logo and legal links.
+ */
 
 document.querySelector('#app').innerHTML = `
   <!doctype html>
@@ -63,7 +71,14 @@ document.querySelector('#app').innerHTML = `
 
 `
 
-// Función para mostrar información About
+/**
+ * Displays an alert with basic information about TaskFlow,
+ * including version, description, and key features.
+ * 
+ * @function showAbout
+ * @returns {void}
+ */
+
 function showAbout() {
   alert(`TaskFlow v1.0.0
   
@@ -78,5 +93,11 @@ Características:
 Desarrollado con tecnologías modernas para una experiencia fluida.`);
 }
 
-// Hacer la función disponible globalmente
+/**
+ * Exposes the showAbout function globally,
+ * allowing it to be called directly from the HTML.
+ * 
+ * Example:
+ * <a href="javascript:void(0)" onclick="showAbout()">About</a>
+ */
 window.showAbout = showAbout;
