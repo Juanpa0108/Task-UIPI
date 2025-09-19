@@ -28,7 +28,7 @@ document.querySelector('#app').innerHTML = `
     </div>
     <nav class="nav">
       <a href="/">Inicio</a>
-      <a href="/about.html">About</a>
+      <a href="/about.html">Sobre Nosotros</a>
       <a href="/login.html">Gestiona tareas</a>
       <a href="/help.html">Ayuda</a>
     </nav>

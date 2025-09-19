@@ -349,6 +349,18 @@ body {
     gap: 10px;
   }
 }
+/* Ajuste responsive para filas de formulario */
+@media (max-width: 768px) {
+  .form-row {
+    flex-direction: column; /* apila en columna */
+    gap: 0.5rem;            /* espacio entre los campos */
+  }
+
+  .form-row .form-group {
+    width: 100%;            /* que cada input ocupe todo el ancho */
+  }
+}
+
 
 /* Celulares */
 @media (max-width: 480px) {
