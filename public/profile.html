@@ -23,22 +23,22 @@
     <div class="form-container">
       <div class="form-group">
         <label for="nombre">Nombres</label>
-        <input type="text" id="nombre" value="Charlene" disabled>
+        <input type="text" id="nombre" disabled required pattern="[A-Za-z\s]+" title="Solo letras y espacios">
       </div>
 
       <div class="form-group">
         <label for="apellidos">Apellidos</label>
-        <input type="text" id="apellidos" value="Reed" disabled>
+        <input type="text" id="apellidos"  disabled required pattern="[A-Za-z\s]+" title="Solo letras y espacios">
       </div>
 
       <div class="form-group">
         <label for="email">Email</label>
-        <input type="email" id="email" value="charlenereed@gmail.com" disabled>
+        <input type="email" id="email" required disabled>
       </div>
 
       <div class="form-group">
         <label for="Age">Edad</label>
-        <input type="number" id="Age" value="20" disabled>
+        <input type="number" id="Age"  disabled required min="13" max="120" title="Edad entre 13 y 120">
       </div>
 
       
