@@ -5,16 +5,16 @@ import { getUserProfile, updateUserProfile } from "../services/authService.js";
 const backBtn = document.getElementById("backBtn");
 const editBtn = document.getElementById("editBtn");
 
-  /**
-   * Loads the user profile on page initialization.
-   * - Fetches the user data from the backend.
-   * - Populates the form fields with user information.
-   * - Sets the inputs to read-only mode initially.
-   */
+/**
+ * Loads the user profile on page initialization.
+ * - Fetches the user data from the backend.
+ * - Populates the form fields with user information.
+ * - Sets the inputs to read-only mode initially.
+ */
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     const response = await getUserProfile(); // returns { user: {...} }
-    const user = response.user;              // ✅ sacamos el objeto user
+    const user = response.user;              
     console.log("📌 Usuario:", user);
 
     const nameEl = document.getElementById("nombre");
@@ -28,7 +28,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     ageEl.value = user.age || "";
 
     // Start in read-only mode
-    [nameEl, lastNameEl, emailEl, ageEl].forEach((el) => el.setAttribute("disabled", "true"));
+    [nameEl, lastNameEl, emailEl, ageEl].forEach((el) =>
+      el.setAttribute("disabled", "true")
+    );
     editBtn.textContent = "Editar Información";
   } catch (error) {
     console.error("Error cargando perfil:", error.message);
@@ -50,9 +52,22 @@ editBtn.addEventListener("click", async () => {
 
   if (isReadOnly) {
     // Switch to edit mode
-    [nameEl, lastNameEl, emailEl, ageEl].forEach((el) => el.removeAttribute("disabled"));
+    [nameEl, lastNameEl, emailEl, ageEl].forEach((el) =>
+      el.removeAttribute("disabled")
+    );
     editBtn.textContent = "Guardar cambios";
     nameEl.focus();
+    return;
+  }
+
+  // ✅ Validation: Ensure no field is empty
+  if (
+    !nameEl.value.trim() ||
+    !lastNameEl.value.trim() ||
+    !emailEl.value.trim() ||
+    !ageEl.value.trim()
+  ) {
+    alert("Todos los campos son obligatorios ❌");
     return;
   }
 
@@ -67,7 +82,9 @@ editBtn.addEventListener("click", async () => {
   try {
     const res = await updateUserProfile(payload);
     // Return to read-only mode
-    [nameEl, lastNameEl, emailEl, ageEl].forEach((el) => el.setAttribute("disabled", "true"));
+    [nameEl, lastNameEl, emailEl, ageEl].forEach((el) =>
+      el.setAttribute("disabled", "true")
+    );
     editBtn.textContent = "Editar Información";
     alert(res.message || "Perfil actualizado con éxito ✅");
   } catch (error) {
@@ -75,10 +92,23 @@ editBtn.addEventListener("click", async () => {
   }
 });
 
+// Restrict name and last name fields to letters only
+document.addEventListener("DOMContentLoaded", () => {
+  const nombreInput = document.getElementById("nombre");
+  const apellidosInput = document.getElementById("apellidos");
+
+  function onlyLetters(e) {
+    e.target.value = e.target.value.replace(/[^a-zA-ZÁÉÍÓÚáéíóúÑñ\s]/g, "");
+  }
+
+  nombreInput.addEventListener("input", onlyLetters);
+  apellidosInput.addEventListener("input", onlyLetters);
+});
+
 /**
  * "Back" button logic
  * - Redirects the user to the main dashboard.
  */
 backBtn.addEventListener("click", () => {
-  window.location.href = "./mainDashBoard.html"; 
+  window.location.href = "./mainDashBoard.html";
 });

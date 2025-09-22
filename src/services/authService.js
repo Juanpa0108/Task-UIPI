@@ -120,8 +120,8 @@ export async function getUserProfile() {
 export async function updateUserProfile(userData) {
   const token = localStorage.getItem("authToken");
 
-  const response = await fetch(`${API_URL}/auth/user`, {  // 👈 ruta correcta
-    method: "PATCH",                                        // 👈 método correcto
+  const response = await fetch(`${API_URL}/auth/user`, {  //  ruta correcta
+    method: "PATCH",                                        //  método correcto
     headers: {
       "Authorization": `Bearer ${token}`,
       "Content-Type": "application/json"

@@ -683,3 +683,75 @@ main.board-container {
     transform: translateY(0);
   }
 }
+/* ================ Botones de acción en las tarjetas ================ */
+/* Cabecera de la tarjeta con botón eliminar arriba */
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8rem;
+}
+
+
+
+.task-actions button {
+  background: #f3f4f6;
+  color: #444;
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.task-actions button:hover {
+  transform: scale(1.05);
+}
+
+/* Diferentes colores */
+.btn-edit:hover { background: var(--primary-color); color: #fff; }
+.btn-status:hover { background: var(--warning-color); color: #fff; }
+.btn-complete:hover { background: var(--success-color); color: #fff; }
+/* ========== BOTÓN ELIMINAR ARRIBA ========== */
+.task-item {
+  position: relative; /* necesario para ubicar el botón dentro */
+  padding-top: 2rem;  /* da espacio arriba */
+}
+
+.btn-delete {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #f0f0f0;
+  color: #666;
+  border: none;
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* Hover y estado activo en rojo */
+.btn-delete:hover,
+.btn-delete:active {
+  background: #dc3545;
+  color: #fff;
+}
+
+/* ========== BOTONES EN FILA ========== */
+.task-actions {
+  display: flex;
+  flex-direction: row;   /* todos seguidos */
+  flex-wrap: nowrap;     /* no se bajen */
+  gap: 0.9rem;           /* espacio entre ellos */
+  margin-top: 0.8rem;
+}
+
+.task-actions button {
+  flex: 0.5; /* para que todos ocupen mismo ancho */
+}
