@@ -111,6 +111,11 @@ document.addEventListener('DOMContentLoaded', () => {
   loadTasksFromAPI(); // Load from API instead of localStorage
   checkEmptyContainers();
   showWelcomeMessage();
+
+  window.addEventListener("userNameUpdated", () => {
+  showWelcomeMessage(); //load if user name is updated in profile
+  });
+
 });
 
 /**
