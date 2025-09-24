@@ -11,7 +11,9 @@
   <header class="profile-header">
     <nav>
       <span class="nav-item active">Perfil</span>
+       <button id="backBtn">Volver al Gestor</button>
     </nav>
+    
     <h1 class="logo">TaskFlow</h1>
   </header>
 
@@ -40,12 +42,21 @@
         <label for="Age">Edad</label>
         <input type="number" id="Age"  disabled required min="13" max="120" title="Edad entre 13 y 120">
       </div>
+<!--
+      <div class="form-group">
+        <label for="createdAt">Cuenta creada el</label>
+        <input type="text" id="createdAt" disabled>
+      -->
+      <div class="created-at-field"> 
+      <label for="createdAt">Miembro desde:</label>
+      <input type="text" id="createdAt" disabled>
+    </div>
 
-      
 </div>
     <div class="button-group">
       <button id="editBtn">Editar Información</button>
-      <button id="backBtn">Volver al Gestor</button>
+      <!-- Button to delete account -->
+      <button id="logoutBtn">Eliminar cuenta</button>
     
   </div>
 
