@@ -45,6 +45,18 @@ body {
   object-fit: cover;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
+.logo img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%; /* lo hace circular */
+  object-fit: cover;  /* recorta la imagen sin deformarla */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2); /* sombra sutil */
+  margin-bottom: 10px;
+}
+
 .menu-toggle, .user-icon {
   font-size: 1.4rem;
   cursor: pointer;
@@ -575,7 +587,7 @@ main.board-container {
 
 .app-footer .footer-links {
   display: flex;
-  justify-content: center;
+  justify-content: right;
   gap: 2rem;
   flex-wrap: wrap;
 }
@@ -754,4 +766,130 @@ main.board-container {
 
 .task-actions button {
   flex: 0.5; /* para que todos ocupen mismo ancho */
+}
+/* ==================== FOOTER ==================== */
+.app-footer {
+  background-color: #1e293b;
+  color: #bbb;
+  padding: 40px 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 40px;
+}
+
+/* ---------- BRAND ---------- */
+.footer-brand {
+  flex: 1;
+  text-align: center;
+}
+
+.footer-logo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%; /* lo hace circular */
+  object-fit: cover;  /* recorta la imagen sin deformarla */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2); /* sombra sutil */
+  margin-bottom: 10px;
+}
+
+.footer-brand p {
+  font-size: 13px;
+  color: #999;
+}
+
+/* ---------- MAPA DEL SITIO ---------- */
+.footer-sitemap {
+  flex: 7;
+}
+
+.footer-sitemap h4 {
+  font-size: 18px;
+  margin-bottom: 20px;
+  color: #fff;
+  font-weight: 700;
+  border-bottom: 2px solid #3c97f8;
+  display: inline-block;
+  padding-bottom: 5px;
+}
+
+/* Columnas con títulos */
+.sitemap-columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.sitemap-columns ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sitemap-columns li:first-child {
+  font-weight: 600;
+  color: #4da3ff;
+  margin-bottom: 12px;
+  font-size: 15px;
+  text-transform: uppercase;
+}
+
+.sitemap-columns li {
+  margin-bottom: 9px;
+}
+
+.sitemap-columns a {
+  text-decoration: none;
+  color: #bbb;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.sitemap-columns a:hover {
+  color: #4da3ff;
+  padding-left: 5px;
+}
+
+/* ---------- BOTTOM ---------- */
+.footer-bottom {
+  width: 100%;
+  border-top: 1px solid #333;
+  margin-top: 30px;
+  padding-top: 15px;
+  text-align: center;
+}
+
+.footer-bottom a {
+  margin: 0 15px;
+  text-decoration: none;
+  font-size: 13px;
+  color: #bbb;
+  transition: color 0.3s ease;
+}
+
+.footer-bottom a:hover {
+  color: #4da3ff;
+}
+
+/* 📱 Responsivo */
+@media (max-width: 900px) {
+  .sitemap-columns {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .footer-links {
+    text-align: left;
+  }
+}
+
+@media (max-width: 600px) {
+  .app-footer {
+    flex-direction: column;
+    text-align: center;
+  }
+  .sitemap-columns {
+    grid-template-columns: 1fr;
+  }
+  .footer-links {
+    text-align: center;
+  }
 }
