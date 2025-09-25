@@ -81,6 +81,22 @@ document.addEventListener("DOMContentLoaded", () => {
     showErrorFor(input, "");
     return true;
   }
+
+  /**
+     * Restrict input to letters and spaces only.
+     * Removes numbers and other invalid characters automatically.
+     * @param {HTMLInputElement} input - Input field to restrict
+     */
+    function restrictToLetters(input) {
+      input.addEventListener("input", () => {
+        input.value = input.value.replace(/[^a-zA-ZÀ-ÿ\s]/g, ""); 
+      });
+    }
+
+    // Apply to first name and last name fields
+    restrictToLetters(firstName);
+    restrictToLetters(lastName);
+
   /**
    * Validate email format.
    * @returns {boolean} True if valid, false otherwise.
@@ -117,6 +133,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     if (n < 13) {
       showErrorFor(age, "Debes ser mayor o igual a 13 años");
+      return false;
+    }
+    if (n > 120){
+      showErrorFor(age, "Ingresa una edad realista");
       return false;
     }
     showErrorFor(age, "");
