@@ -137,3 +137,25 @@ export async function updateUserProfile(userData) {
 
   return data; // { message: "Perfil actualizado", user: {...} }
 }
+
+// ----------------- ELIMINAR CUENTA -----------------
+export async function deleteMyAccount(password) {
+  const token = localStorage.getItem("authToken");
+
+  const response = await fetch(`${API_URL}/auth/user`, {
+    method: "DELETE",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ password })
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error || "Error al eliminar la cuenta");
+  }
+
+  return data; // { message: "Cuenta eliminada correctamente" }
+}
