@@ -1,9 +1,11 @@
 // profile.js
 import "./profile.css";
-import { getUserProfile, updateUserProfile } from "../services/authService.js";
+import { getUserProfile, updateUserProfile, deleteMyAccount } from "../services/authService.js";
 
 const backBtn = document.getElementById("backBtn");
 const editBtn = document.getElementById("editBtn");
+// El botón en el HTML actual se llama logoutBtn; mantener compatibilidad con deleteAccountBtn si existe
+const deleteBtn = document.getElementById("deleteAccountBtn") || document.getElementById("logoutBtn");
 
 /**
  * Loads the user profile on page initialization.
@@ -152,4 +154,31 @@ document.addEventListener("DOMContentLoaded", async () => {
  */
 backBtn.addEventListener("click", () => {
   window.location.href = "./mainDashBoard.html";
+});
+
+/**
+ * Delete account flow with password confirmation prompt.
+ */
+deleteBtn?.addEventListener("click", async () => {
+  const password = prompt("Para confirmar, ingresa tu contraseña:");
+  if (password === null) return; // cancelado
+  if (!password.trim()) {
+    alert("La contraseña es obligatoria");
+    return;
+  }
+
+  try {
+    const res = await deleteMyAccount(password.trim());
+    alert(res.message || "Cuenta eliminada correctamente");
+
+    // limpiar sesión local y redirigir
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("userData");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userEmail");
+    window.location.href = "/index.html";
+  } catch (err) {
+    alert(err.message || "Error al eliminar la cuenta");
+  }
 });
