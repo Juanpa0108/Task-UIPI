@@ -71,7 +71,15 @@ editBtn.addEventListener("click", async () => {
     !emailEl.value.trim() ||
     !ageEl.value.trim()
   ) {
-    alert("Todos los campos son obligatorios ❌");
+    if (typeof window.customAlert === 'function') {
+      await window.customAlert({
+        title: 'Campos requeridos',
+        message: 'Por favor, completa todos los campos antes de continuar.',
+        type: 'warning'
+      });
+    } else {
+      alert("Todos los campos son obligatorios ❌");
+    }
     return;
   }
 
@@ -95,9 +103,25 @@ editBtn.addEventListener("click", async () => {
       localStorage.setItem("userName", payload.firstName);
       window.dispatchEvent(new Event("userNameUpdated"));
 
-    alert(res.message || "Perfil actualizado con éxito ✅");
+    if (typeof window.customAlert === 'function') {
+      await window.customAlert({
+        title: 'Perfil actualizado',
+        message: res.message || 'Tu información ha sido actualizada correctamente.',
+        type: 'success'
+      });
+    } else {
+      alert(res.message || "Perfil actualizado con éxito ✅");
+    }
   } catch (error) {
-    alert("Error al actualizar perfil ❌: " + error.message);
+    if (typeof window.customAlert === 'function') {
+      await window.customAlert({
+        title: 'Error al actualizar',
+        message: `No se pudo actualizar el perfil: ${error.message}`,
+        type: 'error'
+      });
+    } else {
+      alert("Error al actualizar perfil ❌: " + error.message);
+    }
   }
 });
 

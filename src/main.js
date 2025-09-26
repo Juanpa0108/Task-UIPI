@@ -101,3 +101,283 @@ Desarrollado con tecnologías modernas para una experiencia fluida.`);
  * <a href="javascript:void(0)" onclick="showAbout()">About</a>
  */
 window.showAbout = showAbout;
+
+/* ================= SISTEMA DE MODALES PERSONALIZADOS ================= */
+
+/**
+ * Clase para manejar modales personalizados con mejor estética
+ */
+class CustomModal {
+  constructor() {
+    this.overlay = null;
+    this.modal = null;
+    this.currentResolve = null;
+  }
+
+  /**
+   * Crea la estructura HTML del modal
+   */
+  createModal() {
+    // Crear overlay
+    this.overlay = document.createElement('div');
+    this.overlay.className = 'custom-modal-overlay';
+    
+    // Crear modal
+    this.modal = document.createElement('div');
+    this.modal.className = 'custom-modal';
+    
+    this.overlay.appendChild(this.modal);
+    document.body.appendChild(this.overlay);
+    
+    // Click en overlay para cerrar
+    this.overlay.addEventListener('click', (e) => {
+      if (e.target === this.overlay) {
+        this.close(false);
+      }
+    });
+  }
+
+  /**
+   * Muestra un modal de confirmación personalizado
+   */
+  confirm(options = {}) {
+    return new Promise((resolve) => {
+      this.currentResolve = resolve;
+      
+      const {
+        title = '¿Estás seguro?',
+        message = '¿Deseas continuar con esta acción?',
+        confirmText = 'Aceptar',
+        cancelText = 'Cancelar',
+        type = 'warning'
+      } = options;
+
+      if (!this.overlay) {
+        this.createModal();
+      }
+
+      const iconMap = {
+        success: '✓',
+        warning: '⚠',
+        error: '✕',
+        info: 'ℹ'
+      };
+
+      this.modal.innerHTML = `
+        <div class="custom-modal-header">
+          <div class="custom-modal-icon ${type}">
+            ${iconMap[type] || '?'}
+          </div>
+          <h3 class="custom-modal-title">${title}</h3>
+          <p class="custom-modal-message">${message}</p>
+        </div>
+        <div class="custom-modal-footer">
+          <button class="custom-modal-btn secondary" data-action="cancel">
+            ${cancelText}
+          </button>
+          <button class="custom-modal-btn ${type === 'error' ? 'danger' : 'primary'}" data-action="confirm">
+            ${confirmText}
+          </button>
+        </div>
+      `;
+
+      // Agregar event listeners a los botones
+      this.modal.querySelectorAll('[data-action]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const action = e.target.dataset.action;
+          this.close(action === 'confirm');
+        });
+      });
+
+      this.show();
+    });
+  }
+
+  /**
+   * Muestra un modal de alerta personalizado
+   */
+  alert(options = {}) {
+    return new Promise((resolve) => {
+      this.currentResolve = resolve;
+      
+      const {
+        title = 'Información',
+        message = '',
+        buttonText = 'Entendido',
+        type = 'info'
+      } = options;
+
+      if (!this.overlay) {
+        this.createModal();
+      }
+
+      const iconMap = {
+        success: '✓',
+        warning: '⚠',
+        error: '✕',
+        info: 'ℹ'
+      };
+
+      this.modal.innerHTML = `
+        <div class="custom-modal-header">
+          <div class="custom-modal-icon ${type}">
+            ${iconMap[type] || 'ℹ'}
+          </div>
+          <h3 class="custom-modal-title">${title}</h3>
+          <p class="custom-modal-message">${message}</p>
+        </div>
+        <div class="custom-modal-footer">
+          <button class="custom-modal-btn primary" data-action="ok">
+            ${buttonText}
+          </button>
+        </div>
+      `;
+
+      // Agregar event listener al botón
+      this.modal.querySelector('[data-action="ok"]').addEventListener('click', () => {
+        this.close(true);
+      });
+
+      this.show();
+    });
+  }
+
+  /**
+   * Muestra un modal de prompt personalizado
+   */
+  prompt(options = {}) {
+    return new Promise((resolve) => {
+      this.currentResolve = resolve;
+      
+      const {
+        title = 'Ingresa información',
+        message = '',
+        placeholder = '',
+        defaultValue = '',
+        confirmText = 'Aceptar',
+        cancelText = 'Cancelar',
+        type = 'info',
+        inputType = 'text'
+      } = options;
+
+      if (!this.overlay) {
+        this.createModal();
+      }
+
+      const iconMap = {
+        success: '✓',
+        warning: '⚠',
+        error: '✕',
+        info: 'ℹ'
+      };
+
+      this.modal.innerHTML = `
+        <div class="custom-modal-header">
+          <div class="custom-modal-icon ${type}">
+            ${iconMap[type] || '?'}
+          </div>
+          <h3 class="custom-modal-title">${title}</h3>
+          <p class="custom-modal-message">${message}</p>
+        </div>
+        <div class="custom-modal-body">
+          <input type="${inputType}" class="custom-modal-input" placeholder="${placeholder}" value="${defaultValue}">
+        </div>
+        <div class="custom-modal-footer">
+          <button class="custom-modal-btn secondary" data-action="cancel">
+            ${cancelText}
+          </button>
+          <button class="custom-modal-btn primary" data-action="confirm">
+            ${confirmText}
+          </button>
+        </div>
+      `;
+
+      const input = this.modal.querySelector('.custom-modal-input');
+      
+      // Agregar event listeners
+      this.modal.querySelectorAll('[data-action]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const action = e.target.dataset.action;
+          if (action === 'confirm') {
+            this.close(input.value);
+          } else {
+            this.close(null);
+          }
+        });
+      });
+
+      // Enter para confirmar
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          this.close(input.value);
+        }
+      });
+
+      this.show();
+      
+      // Focus en el input después de mostrar
+      setTimeout(() => {
+        input.focus();
+        input.select();
+      }, 100);
+    });
+  }
+
+  /**
+   * Muestra el modal
+   */
+  show() {
+    this.overlay.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+
+  /**
+   * Cierra el modal
+   */
+  close(result) {
+    this.overlay.classList.add('hide');
+    document.body.style.overflow = '';
+    
+    setTimeout(() => {
+      if (this.overlay && this.overlay.parentNode) {
+        this.overlay.parentNode.removeChild(this.overlay);
+      }
+      this.overlay = null;
+      this.modal = null;
+      
+      if (this.currentResolve) {
+        this.currentResolve(result);
+        this.currentResolve = null;
+      }
+    }, 300);
+  }
+}
+
+// Crear instancia global
+const customModal = new CustomModal();
+
+// Sobrescribir funciones nativas para usar los modales personalizados
+window.customAlert = (message, type = 'info') => {
+  const options = typeof message === 'string' 
+    ? { message, type }
+    : message;
+  return customModal.alert(options);
+};
+
+window.customConfirm = (message, options = {}) => {
+  const config = typeof message === 'string' 
+    ? { message, ...options }
+    : message;
+  return customModal.confirm(config);
+};
+
+window.customPrompt = (message, defaultValue = '', options = {}) => {
+  const config = typeof message === 'string' 
+    ? { message, defaultValue, ...options }
+    : message;
+  return customModal.prompt(config);
+};
+
+// Hacer disponibles globalmente
+window.CustomModal = CustomModal;
+window.customModal = customModal;

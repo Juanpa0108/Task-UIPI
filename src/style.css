@@ -192,3 +192,253 @@ body {
     font-size: 0.9rem;
   }
 }
+
+/* ================= MENSAJES EMERGENTES PERSONALIZADOS ================= */
+
+/* Overlay del modal */
+.custom-modal-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: rgba(15, 23, 42, 0.8) !important;
+  backdrop-filter: blur(8px) !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  z-index: 10000 !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transition: all 0.3s ease !important;
+  font-family: 'Segoe UI', Tahoma, sans-serif !important;
+}
+
+.custom-modal-overlay.show {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Contenedor del modal */
+.custom-modal {
+  background: #ffffff !important;
+  border-radius: 20px !important;
+  padding: 0 !important;
+  max-width: 500px !important;
+  width: 90% !important;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25) !important;
+  transform: scale(0.7) translateY(50px) !important;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  font-family: 'Segoe UI', Tahoma, sans-serif !important;
+}
+
+.custom-modal-overlay.show .custom-modal {
+  transform: scale(1) translateY(0) !important;
+}
+
+/* Header del modal */
+.custom-modal-header {
+  padding: 30px 30px 20px !important;
+  text-align: center !important;
+  position: relative !important;
+  background: #ffffff !important;
+}
+
+.custom-modal-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: #fff;
+}
+
+.custom-modal-icon.success {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.custom-modal-icon.warning {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.custom-modal-icon.error {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.custom-modal-icon.info {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+.custom-modal-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 10px;
+}
+
+.custom-modal-message {
+  font-size: 16px;
+  color: #6b7280;
+  line-height: 1.6;
+  margin-bottom: 0;
+}
+
+/* Body del modal */
+.custom-modal-body {
+  padding: 0 30px;
+}
+
+.custom-modal-input {
+  width: 100%;
+  padding: 15px 20px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 16px;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+  background: #f9fafb;
+}
+
+.custom-modal-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Footer del modal */
+.custom-modal-footer {
+  padding: 20px 30px 30px;
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.custom-modal-btn {
+  padding: 12px 24px !important;
+  border: none !important;
+  border-radius: 12px !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  min-width: 120px !important;
+  position: relative !important;
+  overflow: hidden !important;
+  font-family: 'Segoe UI', Tahoma, sans-serif !important;
+}
+
+.custom-modal-btn.primary {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #ffffff;
+}
+
+.custom-modal-btn.primary:hover {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+}
+
+.custom-modal-btn.secondary {
+  background: #f3f4f6;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+}
+
+.custom-modal-btn.secondary:hover {
+  background: #e5e7eb;
+  color: #4b5563;
+}
+
+.custom-modal-btn.danger {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #ffffff;
+}
+
+.custom-modal-btn.danger:hover {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+}
+
+/* Animación de cierre */
+.custom-modal-overlay.hide {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.custom-modal-overlay.hide .custom-modal {
+  transform: scale(0.8) translateY(50px);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .custom-modal {
+    width: 95%;
+    margin: 20px;
+  }
+  
+  .custom-modal-header,
+  .custom-modal-body,
+  .custom-modal-footer {
+    padding: 20px;
+  }
+  
+  .custom-modal-footer {
+    flex-direction: column;
+  }
+  
+  .custom-modal-btn {
+    width: 100%;
+  }
+  
+  .custom-modal-title {
+    font-size: 20px;
+  }
+  
+  .custom-modal-message {
+    font-size: 14px;
+  }
+}
+
+/* Estilos adicionales para asegurar la compatibilidad */
+.custom-modal-title {
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  color: #1f2937 !important;
+  margin-bottom: 10px !important;
+  font-family: 'Segoe UI', Tahoma, sans-serif !important;
+}
+
+.custom-modal-message {
+  font-size: 16px !important;
+  color: #6b7280 !important;
+  line-height: 1.6 !important;
+  margin-bottom: 0 !important;
+  font-family: 'Segoe UI', Tahoma, sans-serif !important;
+}
+
+.custom-modal-icon {
+  width: 64px !important;
+  height: 64px !important;
+  margin: 0 auto 20px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 28px !important;
+  color: #fff !important;
+}
+
+.custom-modal-footer {
+  padding: 20px 30px 30px !important;
+  display: flex !important;
+  gap: 15px !important;
+  justify-content: center !important;
+  background: #ffffff !important;
+}
