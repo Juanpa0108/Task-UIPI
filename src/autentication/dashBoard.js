@@ -392,6 +392,12 @@ async function deleteTask(taskId) {
     document.getElementById(taskId)?.remove();
     checkEmptyContainers();
 
+    // show success alert about delete task 
+    await safeCustomAlert({
+      title: 'Tarea eliminada',
+      message: 'La tarea se eliminó exitosamente.',
+      type: 'success'});
+
   } catch (err) {
     console.error("Error eliminando tarea:", err);
     await safeCustomAlert({
