@@ -56,16 +56,6 @@ document.querySelector('#app').innerHTML = `
     </div>
   </main>
 
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="logo">
-      <img src="/assets/logo.jpg" alt="TaskFlow Logo">
-    </div>
-    <div class="footer-links">
-      <a href="#">Política de privacidad</a>
-      <a href="#">Términos y condiciones</a>
-    </div>
-  </footer>
 </body>
 </html>
 
