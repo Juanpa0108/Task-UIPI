@@ -242,8 +242,8 @@ button {
 }
 
 #logoutBtn:hover {
-  background: #e9ecef; /* gris ligeramente más oscuro */
-  color: #495057;
+  background: #e60000; /* gris ligeramente más oscuro */
+  color: #ebebeb;
   border-color: #adb5bd;
   opacity: 1;
   /* Sin efectos llamativos como scale o sombras */
