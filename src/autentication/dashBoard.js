@@ -1,4 +1,24 @@
 // dashBoard.js (versión corregida)
+// --------- FALLBACK FUNCTIONS ----------
+/**
+ * Fallback functions in case custom modal functions are not available
+ */
+window.safeCustomConfirm = async (options) => {
+  if (typeof window.customConfirm === 'function') {
+    return await window.customConfirm(options);
+  } else {
+    return confirm(options.message || '¿Estás seguro?');
+  }
+};
+
+window.safeCustomAlert = async (options) => {
+  if (typeof window.customAlert === 'function') {
+    return await window.customAlert(options);
+  } else {
+    alert(options.message || 'Información');
+  }
+};
+
 // --------- CONFIG ----------
 /**
  * Object representing the available task states.
@@ -316,7 +336,11 @@ async function saveTask() {
 
   } catch (err) {
     console.error("Error guardando tarea:", err);
-    alert("Error al guardar tarea: " + err.message);
+    await safeCustomAlert({
+      title: 'Error al guardar',
+      message: `No se pudo guardar la tarea: ${err.message}`,
+      type: 'error'
+    });
   }
 }
 
@@ -328,13 +352,25 @@ async function saveTask() {
  * @returns {Promise<void>}
  */
 async function deleteTask(taskId) {
-  if (!confirm('¿Estás seguro de que deseas eliminar esta tarea?')) return;
+  const confirmed = await safeCustomConfirm({
+    title: '¿Eliminar tarea?',
+    message: '¿Estás seguro de que deseas eliminar esta tarea? Esta acción no se puede deshacer.',
+    confirmText: 'Eliminar',
+    cancelText: 'Cancelar',
+    type: 'warning'
+  });
+  
+  if (!confirmed) return;
   
   try {
     const token = localStorage.getItem("authToken");
     
     if (!token) {
-      alert("No se encontró token de autenticación");
+      await safeCustomAlert({
+        title: 'Error de autenticación',
+        message: 'No se encontró token de autenticación. Por favor, inicia sesión de nuevo.',
+        type: 'error'
+      });
       return;
     }
 
@@ -358,7 +394,11 @@ async function deleteTask(taskId) {
 
   } catch (err) {
     console.error("Error eliminando tarea:", err);
-    alert("Error al eliminar tarea: " + err.message);
+    await safeCustomAlert({
+      title: 'Error al eliminar',
+      message: `No se pudo eliminar la tarea: ${err.message}`,
+      type: 'error'
+    });
   }
 }
 

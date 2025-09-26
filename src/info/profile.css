@@ -228,28 +228,30 @@ button {
   }
 }
 #logoutBtn {
-  background: linear-gradient(135deg, #ff5a5a, #e63946); /* rojo degradado */
+  background: #f8f9fa; /* fondo gris muy suave */
   min-width: 130px;
-  color: #fff;
-  border: none;
+  color: #6c757d; /* texto gris discreto */
+  border: 1px solid #dee2e6; /* borde sutil */
   border-radius: 12px;
   padding: 12px 20px;
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 14px; /* tamaño ligeramente menor */
+  font-weight: 500; /* peso normal, menos prominente */
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(230, 57, 70, 0.3);
+  opacity: 0.8; /* ligeramente transparente */
 }
 
 #logoutBtn:hover {
-  background: linear-gradient(135deg, #e63946, #c92a2a);
-  transform: translateY(-2px) scale(1.03);
-  box-shadow: 0 6px 16px rgba(230, 57, 70, 0.4);
+  background: #e9ecef; /* gris ligeramente más oscuro */
+  color: #495057;
+  border-color: #adb5bd;
+  opacity: 1;
+  /* Sin efectos llamativos como scale o sombras */
 }
 
 #logoutBtn:active {
-  transform: translateY(0);
-  box-shadow: 0 3px 8px rgba(230, 57, 70, 0.3);
+  background: #dee2e6;
+  transform: none; /* sin efectos de movimiento */
 }
 
 /* Contenedor */

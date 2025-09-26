@@ -76,7 +76,15 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
 
     if (submitBtn.disabled) {
-      alert('Por favor ingresa un correo válido.');
+      if (typeof window.customAlert === 'function') {
+        await window.customAlert({
+          title: 'Email inválido',
+          message: 'Por favor ingresa un correo electrónico válido.',
+          type: 'warning'
+        });
+      } else {
+        alert('Por favor ingresa un correo válido.');
+      }
       return;
     }
 
@@ -97,10 +105,26 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error(data.message || 'Error al procesar la solicitud');
       }
 
-      alert('✅ Se ha enviado un correo con las instrucciones para recuperar tu contraseña');
+      if (typeof window.customAlert === 'function') {
+        await window.customAlert({
+          title: 'Correo enviado',
+          message: 'Se ha enviado un correo con las instrucciones para recuperar tu contraseña. Revisa tu bandeja de entrada.',
+          type: 'success'
+        });
+      } else {
+        alert('✅ Se ha enviado un correo con las instrucciones para recuperar tu contraseña');
+      }
       window.location.href = '/login.html';
     } catch (error) {
-      alert(`❌ Error: ${error.message}`);
+      if (typeof window.customAlert === 'function') {
+        await window.customAlert({
+          title: 'Error al enviar',
+          message: `No se pudo enviar el correo: ${error.message}`,
+          type: 'error'
+        });
+      } else {
+        alert(`❌ Error: ${error.message}`);
+      }
     }
   });
 });
