@@ -1,3 +1,5 @@
+import Swal from 'sweetalert2'
+
 /**
  * Extracts the reset token from the URL query parameter (?id=...).
  * Used to validate and send the reset password request.
@@ -100,16 +102,23 @@ function validateForm() {
     });
 
     if (response.ok) {
-      alert("✅ Contraseña actualizada correctamente. Serás redirigido al login.");
-      setTimeout(() => {
-        window.location.href = "/login.html";
-      }, 1500);
+      Swal.fire({
+                                  title: "Exito",
+                                  text: "Contraseña actualizada correctamente. Serás redirigido al login.", 
+                                  icon: "success"}).then(() => {
+                                          window.location.href = '/login.html';
+                                  });
     } else {
       const data = await response.json();
-      alert("⚠️ " + (data.error || data.message || "Enlace inválido o caducado."));
+      Swal.fire({
+                                  title: "Error",
+                                  text: data.error || data.message || "Enlace inválido o caducado.", 
+                                  icon: "warning"});
     }
   } catch (err) {
-    console.error(err);
-    alert("❌ Error del servidor. Inténtalo más tarde.");
+    Swal.fire({
+                                  title: "Error",
+                                  text: "Error del servidor. Inténtalo más tarde.", 
+                                  icon: "warning"});
   }
 });

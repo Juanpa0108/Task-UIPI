@@ -1,4 +1,5 @@
 // profile.js
+import Swal from 'sweetalert2'
 import "./profile.css";
 import { getUserProfile, updateUserProfile, deleteMyAccount } from "../services/authService.js";
 
@@ -17,7 +18,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   try {
     const response = await getUserProfile(); // returns { user: {...} }
     const user = response.user;              
-    console.log("📌 Usuario:", user);
 
     const nameEl = document.getElementById("nombre");
     const lastNameEl = document.getElementById("apellidos");
@@ -37,7 +37,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     );
     editBtn.textContent = "Editar Información";
   } catch (error) {
-    console.error("Error cargando perfil:", error.message);
   }
 });
 
@@ -78,7 +77,10 @@ editBtn.addEventListener("click", async () => {
         type: 'warning'
       });
     } else {
-      alert("Todos los campos son obligatorios ❌");
+      Swal.fire({
+                                  title: "Error",
+                                  text: "Todos los campos son obligatorios", 
+                                  icon: "warning"});
     }
     return;
   }
@@ -110,7 +112,10 @@ editBtn.addEventListener("click", async () => {
         type: 'success'
       });
     } else {
-      alert(res.message || "Perfil actualizado con éxito ✅");
+      Swal.fire({
+                                  title: "Exito",
+                                  text: res.message || "Perfil actualizado con éxito ", 
+                                  icon: "success"});
     }
   } catch (error) {
     if (typeof window.customAlert === 'function') {
@@ -120,7 +125,10 @@ editBtn.addEventListener("click", async () => {
         type: 'error'
       });
     } else {
-      alert("Error al actualizar perfil ❌: " + error.message);
+      Swal.fire({
+                                  title: "Error",
+                                  text: "Ha ocurrido un error: " + error.message, 
+                                  icon: "warning"});
     }
   }
 });
@@ -187,13 +195,19 @@ deleteBtn?.addEventListener("click", async () => {
   const password = prompt("Para confirmar, ingresa tu contraseña:");
   if (password === null) return; // cancelado
   if (!password.trim()) {
-    alert("La contraseña es obligatoria");
+    Swal.fire({
+                                  title: "Error",
+                                  text: "La contraseña es obligatoria", 
+                                  icon: "warning"});
     return;
   }
 
   try {
     const res = await deleteMyAccount(password.trim());
-    alert(res.message || "Cuenta eliminada correctamente");
+    Swal.fire({
+                                  title: "Error",
+                                  text: res.message || "Cuenta eliminada correctamente", 
+                                  icon: "warning"});
 
     // limpiar sesión local y redirigir
     localStorage.removeItem("authToken");
@@ -203,6 +217,9 @@ deleteBtn?.addEventListener("click", async () => {
     localStorage.removeItem("userEmail");
     window.location.href = "/index.html";
   } catch (err) {
-    alert(err.message || "Error al eliminar la cuenta");
+    Swal.fire({
+                                  title: "Error",
+                                  text: err.message || "Error al eliminar la cuenta", 
+                                  icon: "warning"});
   }
 });
