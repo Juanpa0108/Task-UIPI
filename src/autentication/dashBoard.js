@@ -3,6 +3,8 @@
 /**
  * Fallback functions in case custom modal functions are not available
  */
+import Swal from 'sweetalert2'
+
 window.safeCustomConfirm = async (options) => {
   if (typeof window.customConfirm === 'function') {
     return await window.customConfirm(options);
@@ -15,7 +17,11 @@ window.safeCustomAlert = async (options) => {
   if (typeof window.customAlert === 'function') {
     return await window.customAlert(options);
   } else {
-    alert(options.message || 'Información');
+              Swal.fire({
+                          title: "Informacion",
+                          text: options.message || 'Información',
+                          icon: "info"
+                        });
   }
 };
 
@@ -108,7 +114,6 @@ window.closeWelcomeBanner = function() {
  * @event DOMContentLoaded
  */
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('DOM cargado, iniciando dashboard...');
 
   if (!checkAuthentication()) return;
 
@@ -282,7 +287,11 @@ async function saveTask() {
     const token = localStorage.getItem("authToken");
     
     if (!token) {
-      alert("No se encontró token de autenticación. Por favor, inicia sesión de nuevo.");
+                    Swal.fire({
+                          title: "Error",
+                          text: "No se encontró token de autenticación. Por favor, inicia sesión de nuevo.",
+                          icon: "warning"
+                        });
       return;
     }
 
@@ -421,7 +430,11 @@ async function updateTaskStatusById(taskId, newStatus) {
     const token = localStorage.getItem("authToken");
     
     if (!token) {
-      alert("No se encontró token de autenticación");
+                    Swal.fire({
+                          title: "Error",
+                          text: "No se encontró token de autenticación.",
+                          icon: "warning"
+                        });
       return;
     }
 
@@ -451,8 +464,11 @@ async function updateTaskStatusById(taskId, newStatus) {
     checkEmptyContainers();
 
   } catch (err) {
-    console.error("Error actualizando estado:", err);
-    alert("Error al actualizar estado: " + err.message);
+    Swal.fire({
+                          title: "Error",
+                          text: "No se pudo actualizar el estado: " + err.message, 
+                          icon: "warning"});
+
   }
 }
 
@@ -718,7 +734,10 @@ function placeTaskInColumn(taskElement, status) {
  */
 function openEditForTask(taskId) {
   const task = tasks.find(t => (t._id || t.id) === taskId);
-  if (!task) return alert('No se encontró la tarea para editar');
+  if (!task) return Swal.fire({
+                          title: "Error",
+                          text: "No se pudo actualizar el estado: " + err.message, 
+                          icon: "warning"});
 
   // Fill the form with task data
   document.getElementById('taskTitle_0').value = task.title;

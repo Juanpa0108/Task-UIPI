@@ -109,11 +109,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const data = await loginUser(credentials);
       
-      console.log('=== RESPUESTA COMPLETA DEL LOGIN ===');
-      console.log('data completa:', data);
-      console.log('data.token:', data.token);
-      console.log('data.user:', data.user);
-      console.log('data.user.firstName:', data.user?.firstName);
 
       if (data.token) {
         // Save token and user data in localStorage
@@ -124,9 +119,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const userId = data.user?._id || data.user?.id;
         if (userId) {
           localStorage.setItem('userId', userId);
-          console.log('✅ userId guardado:', userId);
-        } else {
-          console.warn('⚠️ No se encontró userId en la respuesta del login');
         }
         
         // Save user name for welcome message
@@ -138,17 +130,11 @@ document.addEventListener('DOMContentLoaded', () => {
           localStorage.setItem('userEmail', data.user.email);
         }
         
-        console.log('=== DATOS GUARDADOS EN LOCALSTORAGE ===');
-        console.log('authToken guardado:', localStorage.getItem('authToken'));
-        console.log('userId guardado:', localStorage.getItem('userId'));
-        console.log('userData guardado:', localStorage.getItem('userData'));
-        console.log('userName guardado:', localStorage.getItem('userName'));
-        console.log('userEmail guardado:', localStorage.getItem('userEmail'));
+        
         
         // Verify that userData is stored correctly
         const savedUserData = JSON.parse(localStorage.getItem('userData'));
-        console.log('userData parseado:', savedUserData);
-        console.log('ID del usuario:', savedUserData?._id || savedUserData?.id);
+      
 
         // Redirect to dashboard with token in query param
         window.location.href = "/mainDashBoard.html?token=" + encodeURIComponent(data.token);

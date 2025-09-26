@@ -1,5 +1,5 @@
 // register.js
-
+import Swal from 'sweetalert2'
 import "./register.css";
 import { registerUser } from "../services/authService.js";
 
@@ -247,7 +247,11 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
 
     if (registerBtn.disabled) {
-      alert("Por favor completa todos los campos correctamente.");
+            Swal.fire({
+                  title: "Error",
+                  text: "Por favor completa todos los campos correctamente.",
+                  icon: "warning",
+                });
       return;
     }
 
@@ -261,13 +265,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       const data = await registerUser(payload); // Backend call
-      alert(`✅ ${data.message}`);
-      console.log("Usuario registrado:", data.user);
-
-      // Redirect to login page
-      window.location.href = "/login.html";
+      Swal.fire({
+                  title: "Exito",
+                  text: data.message,
+                  icon: "success",
+                }).then(() => {
+    window.location.href = "/login.html";
+});
     } catch (error) {
-      alert(`❌ Error: ${error.message}`);
+      Swal.fire({
+                  title: "Error",
+                  text: error.message,
+                  icon: "warning",
+                });
     }
   });
 });

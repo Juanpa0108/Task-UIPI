@@ -1,3 +1,4 @@
+import Swal from 'sweetalert2'
 
 /**
  * Handles the password recovery form logic, including:
@@ -83,7 +84,10 @@ document.addEventListener('DOMContentLoaded', () => {
           type: 'warning'
         });
       } else {
-        alert('Por favor ingresa un correo válido.');
+        Swal.fire({
+                                  title: "Error",
+                                  text: "Por favor ingresa un correo válido.", 
+                                  icon: "warning"});
       }
       return;
     }
@@ -110,11 +114,15 @@ document.addEventListener('DOMContentLoaded', () => {
           title: 'Correo enviado',
           message: 'Se ha enviado un correo con las instrucciones para recuperar tu contraseña. Revisa tu bandeja de entrada.',
           type: 'success'
-        });
+        }).then(() => {      window.location.href = '/login.html';});
       } else {
-        alert('✅ Se ha enviado un correo con las instrucciones para recuperar tu contraseña');
+        Swal.fire({
+                                  title: "Exito",
+                                  text: "Se ha enviado un correo con las instrucciones para recuperar tu contraseña. Revisa tu bandeja de entrada.", 
+                                  icon: "success"}).then(() => {
+                                          window.location.href = '/login.html';
+                                  });
       }
-      window.location.href = '/login.html';
     } catch (error) {
       if (typeof window.customAlert === 'function') {
         await window.customAlert({
@@ -123,7 +131,10 @@ document.addEventListener('DOMContentLoaded', () => {
           type: 'error'
         });
       } else {
-        alert(`❌ Error: ${error.message}`);
+                Swal.fire({
+                                  title: "Error",
+                                  text: "Ha ocurrido un error: " + error.message, 
+                                  icon: "warning"});
       }
     }
   });

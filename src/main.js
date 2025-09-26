@@ -80,7 +80,9 @@ document.querySelector('#app').innerHTML = `
  */
 
 function showAbout() {
-  alert(`TaskFlow v1.0.0
+            Swal.fire({
+                    title: "Informacion",
+                    text: `TaskFlow v1.0.0
   
 Una aplicación de gestión de tareas diseñada para ayudarte a organizar tu día de forma sencilla y efectiva.
 
@@ -90,7 +92,9 @@ Características:
 • Seguimiento de progreso
 • Interfaz intuitiva
 
-Desarrollado con tecnologías modernas para una experiencia fluida.`);
+Desarrollado con tecnologías modernas para una experiencia fluida.`,
+                    icon: "info",
+                  });
 }
 
 /**
